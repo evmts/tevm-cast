@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tevm Cast Clone</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" crossorigin href="/index.css">
+</head>
+<body>
+    <div class="container">
+        <div id="helpIcon">?</div>
+        <div id="helpContent">
+            <h3>CLI Commands:</h3>
+            <ul>
+                <li>cast block</li>
+                <li>cast tx</li>
+                <li>cast call</li>
+                <li>cast send</li>
+            </ul>
+        </div>
+
+        <h1>Tevm Cast<span class="blink">_</span></h1>
+
+        <select id="networkSelect">
+            <option value="">Select a network</option>
+            <option value="mainnet">Mainnet</option>
+            <option value="optimism">Optimism</option>
+            <option value="base">Base</option>
+        </select>
+
+        <input type="text" placeholder="https://mainnet.optimism.io" id="rpcUrl" style="display:none"></input>
+
+        <table id="networkInfo" style="display:none;">
+            <tr>
+                <th>Chain ID</th>
+                <td id="chainId"></td>
+            </tr>
+            <tr>
+                <th>Base Fee</th>
+                <td id="baseFee"></td>
+            </tr>
+            <tr>
+                <th>Gas Limit</th>
+                <td id="gasLimit"></td>
+            </tr>
+            <tr>
+                <th>Fork Block</th>
+                <td id="forkBlock"></td>
+            </tr>
+        </table>
+
+        <div id="historyContainer">
+            <select id="historyDropdown">
+                <option value="" selected disabled>History</option>
+                <option value="cast --help">cast --help</option>
+            </select>
+        </div>
+
+        <textarea type="text" id="commandInput" placeholder="enter a command like 'cast bn'"></textarea>
+        <button id="runButton">Run</button>
+        
+        <div id="skeletonLoader">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+        </div>
+        <pre id="output"></pre>
+    </div>
+
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+    <footer>
+        <p>Built with <a href="https://tevm.sh/" target="_blank">Tevm Node</a>. View the source code on <a href="https://github.com/evmts/tevm-cast" target="_blank">GitHub</a>.</p>
+    </footer>
+  </body>
+</html>
