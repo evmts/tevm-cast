@@ -1,7 +1,7 @@
 import type { Nodes, SupportedNetwork } from "./Nodes";
-import { Html } from "./Html";
-import { CommandRunner } from "./CommandRunner";
-import { Storage } from "./Storage";
+import type { Html } from "./Html";
+import type { CommandRunner } from "./CommandRunner";
+import type { Storage } from "./Storage";
 
 /**
  * Manages event listeners for the application.
@@ -126,6 +126,7 @@ export class EventListeners {
      * Sets the command input value when a history item is selected.
      */
     html.historyDropdown.addEventListener('change', function() {
+        getTevmNodes()
         html.commandInput.value = this.value;
         this.selectedIndex = 0;
     });
