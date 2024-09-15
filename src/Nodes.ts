@@ -1,6 +1,6 @@
 import { base as baseCommon, mainnet as mainnetCommon, optimism as optimismCommon } from "tevm/common";
 import { Storage } from "./Storage";
-import { Common } from 'tevm/common'
+import type { Common } from 'tevm/common'
 
 export type SupportedNetwork = 'mainnet' | 'optimism' | 'base'
 

@@ -1,11 +1,11 @@
-import { Address, Hex, parseAbi, PREFUNDED_ACCOUNTS, type TevmNode } from "tevm";
-import { AbiFunction, bytesToHex, encodeFunctionData, getAddress, hexToBytes, numberToHex } from "viem";
-import { runTx, Vm } from "tevm/vm";
-import { AccessList, AccessListItem, createImpersonatedTx } from "tevm/tx";
+import { type Address, type Hex, parseAbi, PREFUNDED_ACCOUNTS, type TevmNode } from "tevm";
+import { type AbiFunction, bytesToHex, encodeFunctionData, getAddress, hexToBytes, numberToHex } from "viem";
+import type { Vm } from "tevm/vm";
+import type { AccessList, AccessListItem } from "tevm/tx";
 import { createAddress } from "tevm/address";
 import { InternalError } from "tevm/errors";
-import { EvmRunCallOpts } from "tevm/evm";
-import { DebugTraceCallResult } from "tevm/actions";
+import type { EvmRunCallOpts } from "tevm/evm";
+import type { DebugTraceCallResult } from "tevm/actions";
 
 export class CallHandler {
   public static readonly handleCallCommand = async (node: TevmNode, command: string) => {
@@ -67,12 +67,14 @@ export class CallHandler {
       }
 
       try {
+        const { createImpersonatedTx } = await import('tevm/tx')
         const tx = createImpersonatedTx({
           impersonatedAddress: createAddress(impersonatedAddress),
           data: hexToBytes(options.data),
           to: options.to && createAddress(options.to),
           chainId: vm.common.id,
         });
+        const { runTx } = await import('tevm/vm')
         const { accessList, receipt } = await runTx(vm)({
           tx,
           reportAccessList: true,

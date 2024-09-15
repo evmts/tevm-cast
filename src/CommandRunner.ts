@@ -1,4 +1,4 @@
-import { Hex, type TevmNode } from "tevm";
+import { type Hex, type TevmNode } from "tevm";
 import { hexToBigInt, hexToBytes, keccak256, numberToHex } from "viem";
 import { HelpText } from "./HelpText.js";
 import { createAddress } from "tevm/address";
