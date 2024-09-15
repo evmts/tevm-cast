@@ -32,7 +32,7 @@
 
         <h1>Tevm Cast<span class="blink" aria-hidden="true">_</span></h1>
 
-        <label for="networkSelect">Select a network:</label>
+        <label for="networkSelect" style="display:none">Select a network:</label>
         <select id="networkSelect">
             <option value="">Select a network</option>
             <option value="mainnet">Mainnet</option>
@@ -40,7 +40,7 @@
             <option value="base">Base</option>
         </select>
 
-        <label for="rpcUrl">RPC URL:</label>
+        <label for="rpcUrl" style="display:none">RPC URL:</label>
         <input type="text" placeholder="https://mainnet.optimism.io" id="rpcUrl" style="display:none">
 
         <table id="networkInfo" style="display:none;">
@@ -64,14 +64,14 @@
         </table>
 
         <div id="historyContainer">
-            <label for="historyDropdown">Command History:</label>
+            <label for="historyDropdown" style="display:none">Command History:</label>
             <select id="historyDropdown">
                 <option value="" selected disabled>History</option>
                 <option value="cast --help">cast --help</option>
             </select>
         </div>
 
-        <label for="commandInput">Enter a command:</label>
+        <label for="commandInput" style="display:none">Enter a command:</label>
         <textarea id="commandInput" placeholder="enter a command like 'cast bn'"></textarea>
         <button id="runButton">Run</button>
         

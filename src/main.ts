@@ -1,11 +1,10 @@
 import { Storage } from './Storage';
 import { Html } from './Html';
 
-// lazy load anything that depends on tevm because
-// tevm adds about 300kb as of September 15th
-const lazyCommandRunner = import('./CommandRunner');
-const lazyNodes = import('./Nodes.js');
-const lazyEventListeners = import('./EventListeners');
+import { CommandRunner } from './CommandRunner';
+import { EventListeners } from './EventListeners';
+import type { Nodes as NodesInstanceType } from './Nodes.js';
+
 
 const storage = new Storage()
 storage.migrateLocalStorage()
@@ -14,9 +13,16 @@ storage.migrateLocalStorage()
 const html = new Html()
 html.renderHistoryDropdown(storage.getStoredHistory());
 
-Promise.all([lazyCommandRunner, lazyEventListeners, lazyNodes]).then(([{CommandRunner},{EventListeners},{ Nodes }]) => {
-  const tevmNodes = new Nodes(storage)
-  const runner = new CommandRunner(html)
-  const listeners = new EventListeners(tevmNodes, storage, html, runner)
-  listeners.addEventListeners()
-})
+let nodes: NodesInstanceType | undefined  = undefined
+const getTevmNode = async () => {
+  // lazy load Nodes because it depends on tevm
+  // tevm adds about 300kb as of September 15th
+  const {Nodes} = await import('./Nodes.js');
+  const out = nodes ?? new Nodes(storage)
+  nodes = out
+  return out
+}
+
+const runner = new CommandRunner(html)
+const listeners = new EventListeners(getTevmNode, storage, html, runner)
+listeners.addEventListeners()

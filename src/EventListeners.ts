@@ -16,7 +16,7 @@ export class EventListeners {
      * @param {CommandRunner} runner - The CommandRunner instance for executing commands.
      */
     constructor(
-        private readonly nodes: Nodes,
+        private readonly getTevmNodes: () => Promise<Nodes>,
         private readonly  storage: Storage,
         private readonly html: Html,
         private readonly runner: CommandRunner,
@@ -28,13 +28,14 @@ export class EventListeners {
    * help icon clicks, command execution, history selection, and output copying.
    */
   public readonly addEventListeners = () => {
-    const { nodes, storage, html, runner } = this
+    const { getTevmNodes, storage, html, runner } = this
 
     /**
      * Event listener for network selection.
      * Creates a new tevm node and updates the UI when a network is selected.
      */
     html.networkSelect.addEventListener('change', async function onNetworkSelect() {
+        const nodes = await getTevmNodes()
         const newNetwork = this.value as SupportedNetwork;
         nodes.network = newNetwork as SupportedNetwork;
         const url = storage.getStoredUrl(newNetwork);
@@ -61,6 +62,7 @@ export class EventListeners {
      * Creates a new tevm node when the RPC URL is changed.
      */
     html.rpcUrlDiv.addEventListener('blur', async function onRpcUrlChange() {
+        const nodes = await getTevmNodes()
         const newUrl = this.value;
         const currentNetwork = nodes.network;
         try {
@@ -80,6 +82,7 @@ export class EventListeners {
      * Runs the 'cast --help' command when the help icon is clicked.
      */
     html.helpIcon.addEventListener('click', async function onHelpIconClick() {
+        const nodes = await getTevmNodes()
         const currentNetwork = nodes.network;
         const node = await nodes[currentNetwork].lazyLoadedNode;
         runner.runCommand(node, 'cast --help');
@@ -90,6 +93,7 @@ export class EventListeners {
      * Executes the entered command and updates command history.
      */
     html.runButton.addEventListener('click', async function onRunButtonClick() {
+        const nodes = await getTevmNodes()
         const command = html.commandInput.value.trim();
         const currentNetwork = nodes.network;
         const node = await nodes[currentNetwork].lazyLoadedNode;

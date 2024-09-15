@@ -268,7 +268,7 @@
     #historyContainer > * {
         margin: 0 5px;
     }
-    #historyContainer > *:first-child {
+    #historyContainer > *:nth-child(2) {
         margin-left: 0;
     }
     #historyContainer > *:last-child {
