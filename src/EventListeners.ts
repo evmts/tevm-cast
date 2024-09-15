@@ -124,8 +124,7 @@ export class EventListeners {
          * Event listener for history dropdown changes.
          * Sets the command input value when a history item is selected.
          */
-        html.historyDropdown.addEventListener('change', function () {
-            getTevmNodes()
+        html.historyDropdown.addEventListener('change', function() {
             html.commandInput.value = html.historyDropdown.value;
             html.historyDropdown.selectedIndex = 0;
         });
@@ -169,7 +168,7 @@ export class EventListeners {
                 }, 200);
                 setTimeout(() => {
                     copiedMessage.style.opacity = '0';
-                    copiedMessage.addEventListener('transitionend', function () {
+                    copiedMessage.addEventListener('transitionend', function() {
                         document.body.removeChild(copiedMessage);
                     }, { once: true });
                 }, 1500);
