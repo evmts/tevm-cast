@@ -1,12 +1,12 @@
 import { Hex, type TevmNode } from "tevm";
-import { hexToBytes, keccak256, numberToHex } from "viem";
+import { hexToBigInt, hexToBytes, keccak256, numberToHex } from "viem";
 import { HelpText } from "./HelpText.js";
 import { createAddress } from "tevm/address";
 import type { Html } from "./Html";
 import { CallHandler } from "./CallHandler";
 
 export class CommandRunner {
-  constructor(private readonly html: Html) {}
+  constructor(private readonly html: Html) { }
 
   private static parseBlockTag(tag: string): Hex | bigint | 'latest' {
     if (tag.startsWith('0x')) {
@@ -22,7 +22,7 @@ export class CommandRunner {
    * Giant switch statement that runs every command
    * This works for now but might be a good idea to use a cli library as this scales
    */
-  public readonly runCommand= async (node: TevmNode, command: string): Promise<void> => {
+  public readonly runCommand = async (node: TevmNode, command: string): Promise<void> => {
     try {
       switch (true) {
         case '' === command:
@@ -87,7 +87,7 @@ export class CommandRunner {
         case command.startsWith('cast call '):
           this.html.renderCommandLoading()
           this.html.renderCommandResult(
-           JSON.stringify(await CallHandler.handleCallCommand(node, command), null, 2)
+            JSON.stringify(await CallHandler.handleCallCommand(node, command), null, 2)
           )
           return;
 
@@ -153,7 +153,9 @@ export class CommandRunner {
           const storageAddress = storageParts[2] as `0x${string}`;
           let slot = storageParts[3] as `0x${string}`;
           if (!slot.startsWith('0x')) {
-            slot = numberToHex(BigInt(slot));
+            slot = numberToHex(BigInt(slot), { size: 32 });
+          } else {
+            slot = numberToHex(hexToBigInt(slot), { size: 32 })
           }
           const storageValue = await node.getVm().then(vm => vm.stateManager.getContractStorage(createAddress(storageAddress), hexToBytes(slot)));
           this.html.renderCommandResult(`${storageValue}`);
