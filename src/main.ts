@@ -4,12 +4,13 @@ import { Html } from './Html';
 import { CommandRunner } from './CommandRunner';
 import { EventListeners } from './EventListeners';
 
+const html = new Html()
+
+html.focusOnCommandInput()
 
 const storage = new Storage()
 storage.migrateLocalStorage()
 
-
-const html = new Html()
 html.renderHistoryDropdown(storage.getStoredHistory());
 
 let nodes: import('./Nodes.js').Nodes | undefined  = undefined

@@ -17,18 +17,18 @@ export class Html {
   public readonly runButton = document.getElementById('runButton')! as HTMLButtonElement;
   public readonly historyDropdown = document.getElementById('historyDropdown')! as HTMLSelectElement;
 
-  renderCommandLoading = () => {
+  public readonly renderCommandLoading = () => {
     this.output.style.display = 'none';
     this.skeletonLoader.style.display = 'block';
   };
 
-  renderCommandResult = (content: string) => {
+  public readonly renderCommandResult = (content: string) => {
     this.skeletonLoader.style.display = 'none';
     this.output.style.display = 'block';
     this.output.textContent = content;
   };
 
-  renderHistoryDropdown = (history: string[]) => {
+  public readonly renderHistoryDropdown = (history: string[]) => {
     while (this.historyDropdown.options.length > 1) {
       this.historyDropdown.remove(1);
     }
@@ -40,4 +40,30 @@ export class Html {
     });
   }
 
+    /**
+     * Focuses on the command input and registers the Enter key listener.
+     * Removes the listener when the input loses focus.
+     */
+    public readonly focusOnCommandInput = () => {
+        this.commandInput.focus();
+        this.addEnterKeyListener()
+    }
+
+    public readonly addEnterKeyListener = () => {
+        this.commandInput.addEventListener('keydown', this.handleCommandEnterKey);
+        this.commandInput.addEventListener('blur', () => {
+            this.commandInput.removeEventListener('keydown', this.handleCommandEnterKey);
+        });
+    }
+
+    /**
+     * Handles the Enter key press on the command input.
+     * Triggers the run button click when Enter is pressed.
+     */
+    public readonly handleCommandEnterKey = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); 
+            this.runButton.click(); 
+        }
+    };
 }
