@@ -45,7 +45,6 @@ export class EventListeners {
         if (this.value) {
         html.networkInfo.style.display = 'table';
         html.rpcUrlDiv.style.display = 'block';
-        // Simulating network info
         const [chainId, block] = await Promise.all([node.getVm().then(vm => vm.common.id), node.getVm().then(vm => vm.blockchain.getCanonicalHeadBlock())])
         html.chainIdCell.textContent = chainId.toLocaleString();
         html.baseFeeCell.textContent = block.header.baseFeePerGas?.toLocaleString() ?? '';
@@ -66,14 +65,19 @@ export class EventListeners {
         const newUrl = this.value;
         const currentNetwork = nodes.network;
         try {
-        const node = await Nodes.lazyLoadedTevmNode(newUrl, nodes[currentNetwork].common);
-        // If tevm node creation is successful, update the stored URL and reinitialize the tevm node
-        storage.setStoredUrl(currentNetwork, newUrl);
-        nodes[currentNetwork].lazyLoadedNode = Promise.resolve(node);
+            const node = await Nodes.lazyLoadedTevmNode(newUrl, nodes[currentNetwork].common);
+            // If tevm node creation is successful, update the stored URL and reinitialize the tevm node
+            storage.setStoredUrl(currentNetwork, newUrl);
+            nodes[currentNetwork].lazyLoadedNode = Promise.resolve(node);
+            const [chainId, block] = await Promise.all([node.getVm().then(vm => vm.common.id), node.getVm().then(vm => vm.blockchain.getCanonicalHeadBlock())])
+            html.chainIdCell.textContent = chainId.toLocaleString();
+            html.baseFeeCell.textContent = block.header.baseFeePerGas?.toLocaleString() ?? '';
+            html.gasLimitCell.textContent = block.header.gasLimit.toLocaleString();
+            html.forkBlockCell.textContent = block.header.number.toLocaleString();
         } catch (error) {
-        console.error('Failed to create tevm node with new URL:', error);
-        // Revert to the previously stored URL
-        this.value = storage.getStoredUrl(currentNetwork);
+            console.error('Failed to create tevm node with new URL:', error);
+            // Revert to the previously stored URL
+            this.value = storage.getStoredUrl(currentNetwork);
         }
     });
 
