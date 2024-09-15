@@ -8,12 +8,15 @@ Commands:
   balance                Get the balance of an account in wei [aliases: b]
   block                  Get information about a block [aliases: bl]
   block-number           Get the latest block number [aliases: bn]
-  call                   Perform a call on an account without publishing a transaction [aliases: c]
+  call                   Perform a call [aliases: c]
   chain-id               Get the Ethereum chain ID [aliases: ci, cid]
   code                   Get the runtime bytecode of a contract [aliases: co]
   keccak                 Hash data using keccak-256
   storage                Get the raw value of a contract's storage slot
-  receipt                     Get information about a transaction
+  receipt                Get information about a transaction
+
+Open an issue if you would like more functionality added
+Most cast apis could be supported: https://github.com/evmts/tevm-cast/issues
 
 Options:
   -h, --help     Print help
