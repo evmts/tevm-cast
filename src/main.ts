@@ -3,7 +3,6 @@ import { Html } from './Html';
 
 import { CommandRunner } from './CommandRunner';
 import { EventListeners } from './EventListeners';
-import type { Nodes as NodesInstanceType } from './Nodes.js';
 
 
 const storage = new Storage()
@@ -13,7 +12,7 @@ storage.migrateLocalStorage()
 const html = new Html()
 html.renderHistoryDropdown(storage.getStoredHistory());
 
-let nodes: NodesInstanceType | undefined  = undefined
+let nodes: import('./Nodes.js').Nodes | undefined  = undefined
 const getTevmNode = async () => {
   // lazy load Nodes because it depends on tevm
   // tevm adds about 300kb as of September 15th

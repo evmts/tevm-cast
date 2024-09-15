@@ -1,4 +1,4 @@
-import { Nodes, SupportedNetwork } from "./Nodes";
+import type { Nodes, SupportedNetwork } from "./Nodes";
 import { Html } from "./Html";
 import { CommandRunner } from "./CommandRunner";
 import { Storage } from "./Storage";
@@ -62,6 +62,7 @@ export class EventListeners {
      */
     html.rpcUrlDiv.addEventListener('blur', async function onRpcUrlChange() {
         const nodes = await getTevmNodes()
+        const {Nodes} = await import('./Nodes.js')
         const newUrl = this.value;
         const currentNetwork = nodes.network;
         try {
