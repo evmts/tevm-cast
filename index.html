@@ -9,8 +9,8 @@
 </head>
 <body>
     <div class="container">
-        <div id="helpIcon">?</div>
-        <div id="helpContent">
+        <div id="helpIcon" role="button" aria-label="Help" tabindex="0">?</div>
+        <div id="helpContent" aria-hidden="true">
             <h3>CLI Commands:</h3>
             <ul>
                 <li>cast block</li>
@@ -20,8 +20,9 @@
             </ul>
         </div>
 
-        <h1>Tevm Cast<span class="blink">_</span></h1>
+        <h1>Tevm Cast<span class="blink" aria-hidden="true">_</span></h1>
 
+        <label for="networkSelect">Select a network:</label>
         <select id="networkSelect">
             <option value="">Select a network</option>
             <option value="mainnet">Mainnet</option>
@@ -29,43 +30,47 @@
             <option value="base">Base</option>
         </select>
 
-        <input type="text" placeholder="https://mainnet.optimism.io" id="rpcUrl" style="display:none"></input>
+        <label for="rpcUrl">RPC URL:</label>
+        <input type="text" placeholder="https://mainnet.optimism.io" id="rpcUrl" style="display:none">
 
         <table id="networkInfo" style="display:none;">
+            <caption>Network Information</caption>
             <tr>
-                <th>Chain ID</th>
+                <th scope="row">Chain ID</th>
                 <td id="chainId"></td>
             </tr>
             <tr>
-                <th>Base Fee</th>
+                <th scope="row">Base Fee</th>
                 <td id="baseFee"></td>
             </tr>
             <tr>
-                <th>Gas Limit</th>
+                <th scope="row">Gas Limit</th>
                 <td id="gasLimit"></td>
             </tr>
             <tr>
-                <th>Fork Block</th>
+                <th scope="row">Fork Block</th>
                 <td id="forkBlock"></td>
             </tr>
         </table>
 
         <div id="historyContainer">
+            <label for="historyDropdown">Command History:</label>
             <select id="historyDropdown">
                 <option value="" selected disabled>History</option>
                 <option value="cast --help">cast --help</option>
             </select>
         </div>
 
-        <textarea type="text" id="commandInput" placeholder="enter a command like 'cast bn'"></textarea>
+        <label for="commandInput">Enter a command:</label>
+        <textarea id="commandInput" placeholder="enter a command like 'cast bn'"></textarea>
         <button id="runButton">Run</button>
         
-        <div id="skeletonLoader">
+        <div id="skeletonLoader" aria-hidden="true">
             <div class="skeleton-line"></div>
             <div class="skeleton-line"></div>
             <div class="skeleton-line"></div>
         </div>
-        <pre id="output"></pre>
+        <pre id="output" aria-live="polite"></pre>
     </div>
 
     <div id="app"></div>
