@@ -3,7 +3,18 @@ import { Html } from "./Html";
 import { CommandRunner } from "./CommandRunner";
 import { Storage } from "./Storage";
 
+/**
+ * Manages event listeners for the application.
+ * This class sets up and handles various user interactions and UI updates.
+ */
 export class EventListeners {
+    /**
+     * Creates an instance of EventListeners.
+     * @param {Nodes} nodes - The Nodes instance for managing network nodes.
+     * @param {Storage} storage - The Storage instance for managing local storage.
+     * @param {Html} html - The Html instance for managing UI elements.
+     * @param {CommandRunner} runner - The CommandRunner instance for executing commands.
+     */
     constructor(
         private readonly nodes: Nodes,
         private readonly  storage: Storage,
@@ -11,9 +22,18 @@ export class EventListeners {
         private readonly runner: CommandRunner,
     ){}
 
+  /**
+   * Adds all event listeners to the application.
+   * This method sets up listeners for network selection, RPC URL changes,
+   * help icon clicks, command execution, history selection, and output copying.
+   */
   public readonly addEventListeners = () => {
     const { nodes, storage, html, runner } = this
-    // when network is selected create a new tevm node and update the ui
+
+    /**
+     * Event listener for network selection.
+     * Creates a new tevm node and updates the UI when a network is selected.
+     */
     html.networkSelect.addEventListener('change', async function onNetworkSelect() {
         const newNetwork = this.value as SupportedNetwork;
         nodes.network = newNetwork as SupportedNetwork;
@@ -36,7 +56,10 @@ export class EventListeners {
         }
     });
 
-    // when rpc url changes make a new tevm node
+    /**
+     * Event listener for RPC URL changes.
+     * Creates a new tevm node when the RPC URL is changed.
+     */
     html.rpcUrlDiv.addEventListener('blur', async function onRpcUrlChange() {
         const newUrl = this.value;
         const currentNetwork = nodes.network;
@@ -52,12 +75,20 @@ export class EventListeners {
         }
     });
 
+    /**
+     * Event listener for help icon clicks.
+     * Runs the 'cast --help' command when the help icon is clicked.
+     */
     html.helpIcon.addEventListener('click', async function onHelpIconClick() {
         const currentNetwork = nodes.network;
         const node = await nodes[currentNetwork].lazyLoadedNode;
         runner.runCommand(node, 'cast --help');
     });
 
+    /**
+     * Event listener for run button clicks.
+     * Executes the entered command and updates command history.
+     */
     html.runButton.addEventListener('click', async function onRunButtonClick() {
         const command = html.commandInput.value.trim();
         const currentNetwork = nodes.network;
@@ -81,13 +112,19 @@ export class EventListeners {
         runner.runCommand(node, command);
     });
 
-    // Set command input from history
+    /**
+     * Event listener for history dropdown changes.
+     * Sets the command input value when a history item is selected.
+     */
     html.historyDropdown.addEventListener('change', function() {
         html.commandInput.value = this.value;
         this.selectedIndex = 0;
     });
 
-    // Copy output to clipboard when clicked
+    /**
+     * Event listener for output clicks.
+     * Copies the output to clipboard when clicked and shows a confirmation message.
+     */
     html.output.addEventListener('click', function copyOutputToClipboard() {
         const text = this.textContent || '';
         navigator.clipboard.writeText(text).then(() => {

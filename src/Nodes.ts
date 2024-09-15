@@ -1,5 +1,6 @@
 import { base as baseCommon, mainnet as mainnetCommon, optimism as optimismCommon } from "tevm/common";
 import { Storage } from "./Storage";
+import { createTevmNode, http } from 'tevm'
 import type { Common } from 'tevm/common'
 
 export type SupportedNetwork = 'mainnet' | 'optimism' | 'base'
@@ -12,7 +13,6 @@ export type SupportedNetwork = 'mainnet' | 'optimism' | 'base'
 export class Nodes {
   // We choose to lazy load tevm to optimize first load
   public static lazyLoadedTevmNode = async (rpcUrl: string, common: Common) => {
-    const { createTevmNode, http } = await import('tevm')
     return createTevmNode({
       common,
       fork: {

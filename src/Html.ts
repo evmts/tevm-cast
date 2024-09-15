@@ -1,3 +1,7 @@
+/**
+ * Represents the HTML elements and rendering methods for the CLI interface.
+ * @class
+ */
 export class Html {
   public readonly networkSelect = document.getElementById('networkSelect')! as HTMLSelectElement;
   public readonly rpcUrlDiv = document.getElementById('rpcUrl')! as HTMLInputElement;
