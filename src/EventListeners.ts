@@ -98,7 +98,7 @@ export class EventListeners {
          */
         html.runButton.addEventListener('click', async function onRunButtonClick() {
             const nodes = await getTevmNodes()
-            const command = html.commandInput.value.trim();
+            const command = html.commandInput.value.trim().toLowerCase();
             const currentNetwork = nodes.network;
             const node = await nodes[currentNetwork].lazyLoadedNode;
 
