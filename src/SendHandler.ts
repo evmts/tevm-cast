@@ -6,7 +6,7 @@ export class SendHandler {
   public static readonly handleSendCommand = async (node: TevmNode, command: string) => {
     const parts = command.split(' ');
     if (parts.length < 3) {
-      throw new Error('Usage: cast send <to> <sig> [args...] --from <address> [--value <value>] [--gas-limit <limit>] [--gas-price <price>] [--nonce <nonce>]');
+      throw new Error('Usage: cast send <to> <sig> [args...] --from <address> [--value <value>] [--gas-limit <limit>] [--gas-price <price>] [--nonce <nonce>] [--access-list] [--trace]');
     }
     const to = parts[2] as `0x${string}`;
     let sig = parts[3];
@@ -53,10 +53,17 @@ export class SendHandler {
     const nonceIndex = parts.indexOf('--nonce');
     if (nonceIndex !== -1) options.nonce = BigInt(parts[nonceIndex + 1]);
 
+    const includeAccessList = parts.includes('--access-list');
+    const includeTrace = parts.includes('--trace');
+
     const vm = await node.getVm();
 
     try {
       const { createImpersonatedTx } = await import('tevm/tx');
+      const baseFeePerGas = (await vm.blockchain.getCanonicalHeadBlock()).header.baseFeePerGas!;
+      const maxPriorityFeePerGas = BigInt(2000000000); // Set a reasonable priority fee
+      const maxFeePerGas = baseFeePerGas + maxPriorityFeePerGas; // Ensure maxFeePerGas is always higher
+
       const tx = createImpersonatedTx({
         impersonatedAddress: createAddress(impersonatedAddress),
         data: hexToBytes(options.data),
@@ -64,34 +71,13 @@ export class SendHandler {
         chainId: vm.common.id,
         value: options.value,
         gasLimit: options.gasLimit ?? (await vm.blockchain.getCanonicalHeadBlock()).header.gasLimit,
-        gasPrice: options.gasPrice ?? (await vm.blockchain.getCanonicalHeadBlock()).header.baseFeePerGas,
+        maxFeePerGas: options.gasPrice ?? maxFeePerGas,
+        maxPriorityFeePerGas,
         nonce: options.nonce ?? (await vm.stateManager.getAccount(createAddress(impersonatedAddress)))?.nonce ?? 0n,
-        maxFeePerGas: options.gasPrice ?? (await vm.blockchain.getCanonicalHeadBlock()).header.baseFeePerGas! * 2n,
       });
 
       const { runTx } = await import('tevm/vm');
-      const {
-        receipt,
-        amountSpent,
-        bloom,
-        execResult: {
-          executionGasUsed,
-          returnValue,
-          createdAddresses,
-          exceptionError,
-          gas,
-          logs,
-          runState,
-          selfdestruct
-        },
-        gasRefund,
-        minerValue,
-        totalGasSpent,
-        accessList,
-        blobGasUsed,
-        createdAddress,
-        preimages,
-      } = await runTx(vm)({
+      const result = await runTx(vm)({
         tx,
         skipBalance: true,
         skipNonce: true,
@@ -99,7 +85,25 @@ export class SendHandler {
         skipHardForkValidation: true,
       });
 
-      return {
+      const {
+        receipt,
+        amountSpent,
+        execResult: {
+          executionGasUsed,
+          returnValue,
+          createdAddresses,
+          exceptionError,
+          gas,
+          logs,
+        },
+        gasRefund,
+        minerValue,
+        totalGasSpent,
+        blobGasUsed,
+        createdAddress,
+      } = result;
+
+      const response: any = {
         executionGasUsed: executionGasUsed.toString(),
         returnValue: bytesToHex(returnValue),
         createdAddresses: createdAddresses ? Array.from(createdAddresses).map(addr => addr.toString()) : undefined,
@@ -115,11 +119,19 @@ export class SendHandler {
         gasRefund: gasRefund !== undefined ? gasRefund.toString() : undefined,
         minerValue: minerValue !== undefined ? minerValue.toString() : undefined,
         totalGasSpent: totalGasSpent !== undefined ? totalGasSpent.toString() : undefined,
-        accessList: accessList,
         blobGasUsed: blobGasUsed !== undefined ? blobGasUsed.toString() : undefined,
         createdAddress: createdAddress,
-        preimages: preimages
       };
+
+      if (includeAccessList) {
+        response.accessList = result.accessList;
+      }
+
+      if (includeTrace) {
+        response.trace = result.execResult.runState;
+      }
+
+      return response;
     } catch (error) {
       return error as Error;
     }

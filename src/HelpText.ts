@@ -26,7 +26,7 @@ Commands:
   logs                   Get logs by signature or topic [aliases: l] (New feature!)
   nonce                  Get the nonce for an account [aliases: n]
   *receipt               Get information about a transaction [aliases: r] (New feature!)
-  (wip) send             Publish a transaction to fork. All accounts are automatically impersonated (New feature!)
+  send             Publish a transaction to fork. All accounts are automatically impersonated (New feature!)
   *sig                   Get the selector for a function [aliases: s] (New feature!)
   storage                Get the raw value of a contract's storage slot [aliases: st]
 
@@ -191,7 +191,9 @@ Transaction options:
   --gas-limit <GAS_LIMIT>           Gas limit for the transaction
   --gas-price <PRICE>               Gas price for the transaction
   --value <VALUE>                   Ether to send in the transaction (in wei)
-  --nonce <NONCE>                   Nonce for the transaction`;
+  --nonce <NONCE>                   Nonce for the transaction
+  --trace                           Print a full trace of the transaction
+  --access-list                     Create an access list for the transaction`;
   static readonly fourByteHelp = `Get the function signatures for the given selector from https://openchain.xyz
 
   Usage: cast 4byte [SELECTOR]
