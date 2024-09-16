@@ -335,17 +335,21 @@ export class CommandRunner {
         }
 
         case command.startsWith('cast gas-price ') && (command.includes('--help') || command.includes('-h')):
+        case command.startsWith('cast gp ') && (command.includes('--help') || command.includes('-h')):
           this.html.renderCommandResult(HelpText.gasPriceHelp);
           return;
 
+        case command.startsWith('cast gp'):
         case command.startsWith('cast gas-price'): {
           this.html.renderCommandLoading();
+
           const request = {
             jsonrpc: '2.0',
             id: 1,
             method: 'eth_gasPrice',
             params: [],
           } as const;
+
           const response = await gasPriceProcedure(node)(request);
 
           if ('error' in response && response.error !== undefined) {
@@ -411,15 +415,14 @@ export class CommandRunner {
           try {
             // Get the forked block number as the default fromBlock
             const vm = await node.getVm();
-            const forkedBlock = vm.blockchain.blocksByTag.get('forked');
-            const defaultFromBlock = forkedBlock ? numberToHex(forkedBlock.header.number) : 'latest';
+            const forkedBlock = vm.blockchain.blocksByTag.get('forked')!;
 
             const request: EthGetLogsJsonRpcRequest = {
               jsonrpc: '2.0',
               id: 1,
               method: 'eth_getLogs',
               params: [{
-                fromBlock: fromBlock || defaultFromBlock,
+                fromBlock: fromBlock ?? forkedBlock.header.number,
                 toBlock: toBlock || 'latest',
                 address: address ? createAddress(address).toString() : undefined,
                 topics: topics?.length ? [topics] : undefined,
