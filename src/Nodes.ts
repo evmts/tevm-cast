@@ -12,7 +12,7 @@ import { Storage } from "./Storage";
 import { createTevmNode, http } from 'tevm'
 import type { Common } from 'tevm/common'
 
-export type SupportedNetwork = 'mainnet' | 'optimism' | 'base' | 'arbitrum' | 'zora' | 'polygon' | 'redstone'
+export type SupportedNetwork = 'mainnet' | 'optimism' | 'base' | 'arbitrum' | 'zora' | 'polygon' | 'redstone' | 'sepolia'
 
 
 /**
