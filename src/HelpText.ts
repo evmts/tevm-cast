@@ -1,33 +1,33 @@
 export class HelpText {
         static readonly help = `Perform Ethereum RPC calls from the comfort of your command line
 A cast-like cli in the browser built with Tevm
+Note: some of these methods were recently added with AI and not tested yet if they have a * they are untested but may still work
 
 Usage: cast <COMMAND>
 
 Commands:
-  4byte                  Get the function selector for a function signature
-  abi-decode             Decode ABI-encoded input or output data
-  abi-encode             ABI-encode input data
-  access-list            Create an access list for a transaction [aliases: al]
-  age                    Get the timestamp of a block
-  balance                Get the balance of an account in wei [aliases: b]
-  base-fee               Get the base fee of a block
+  *4byte                 Get the function selector for a function signature (New feature!)
+  *abi-decode            Decode ABI-encoded input or output data (New feature!)
+  *abi-encode            ABI-encode input data (New feature!)
+  *access-list           Create an access list for a transaction [aliases: al] (New feature!)
+  *age                   Get the timestamp of a block (New feature!)
+  *balance               Get the balance of an account in wei [aliases: b] (New feature!)
+  *base-fee              Get the base fee of a block (New feature!)
   block                  Get information about a block [aliases: bl]
   block-number           Get the latest block number [aliases: bn]
   call                   Perform a call [aliases: c]
-  calldata               ABI-encode input data
+  *calldata              ABI-encode input data (New feature!)
   chain-id               Get the Ethereum chain ID [aliases: ci, cid]
   code                   Get the runtime bytecode of a contract [aliases: co]
   compute-address        Compute the contract address from a given nonce and deployer address
   create2                Compute the address of a contract created with CREATE2
-  estimate               Estimate gas cost of a transaction [aliases: e]
-  gas-price              Get the current gas price [aliases: gp]
+  *gas-price             Get the current gas price [aliases: gp] (New feature!)
   keccak                 Hash data using keccak-256
-  logs                   Get logs by signature or topic [aliases: l]
+  *logs                  Get logs by signature or topic [aliases: l] (New feature!)
   nonce                  Get the nonce for an account [aliases: n]
-  receipt                Get information about a transaction [aliases: r]
-  send                   Publish a transaction. All accounts are automatically impersonated
-  sig                    Get the selector for a function [aliases: s]
+  *receipt               Get information about a transaction [aliases: r] (New feature!)
+  *send                  Publish a transaction. All accounts are automatically impersonated (New feature!)
+  *sig                   Get the selector for a function [aliases: s] (New feature!)
   storage                Get the raw value of a contract's storage slot [aliases: st]
 
 
