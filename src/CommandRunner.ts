@@ -183,13 +183,9 @@ export class CommandRunner {
           }
           return;
         }
-        case command === 'cast base-fee':
         case command.startsWith('cast base-fee ') && (command.includes('--help') || command.includes('-h')):
-        case command === 'cast ba':
         case command.startsWith('cast ba ') && (command.includes('--help') || command.includes('-h')):
-        case command === 'cast fee':
         case command.startsWith('cast fee ') && (command.includes('--help') || command.includes('-h')):
-        case command === 'cast basefee':
         case command.startsWith('cast basefee ') && (command.includes('--help') || command.includes('-h')):
           this.html.renderCommandResult(HelpText.baseFeeHelp);
           return;
@@ -337,7 +333,7 @@ export class CommandRunner {
           }
           return;
         }
-        case command === 'cast gas-price':
+
           case command.startsWith('cast gas-price ') && (command.includes('--help') || command.includes('-h')):
             this.html.renderCommandResult(HelpText.gasPriceHelp);
             return;
@@ -704,6 +700,26 @@ export class CommandRunner {
             throw new Error('Transaction receipt not found');
           }
           this.html.renderCommandResult(`${JSON.stringify(receipt, null, 2)}`);
+          return;
+
+        case command.startsWith('cast sig ') && (command.includes('--help') || command.includes('-h')):
+          this.html.renderCommandResult(HelpText.sigHelp);
+          return;
+
+        case command.startsWith('cast sig '):
+          this.html.renderCommandLoading();
+          const sigParts = command.split(' ');
+          if (sigParts.length < 3) {
+            throw new Error('Usage: cast sig <SIGNATURE>');
+          }
+          const signature = sigParts.slice(2).join(' ');
+          try {
+            const selector = keccak256(signature as Hex).slice(0, 10);
+            this.html.renderCommandResult(selector);
+          } catch (error) {
+            console.error(error);
+            this.html.renderCommandResult(`Error: ${error.message}`);
+          }
           return;
 
         default:
