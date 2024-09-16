@@ -621,7 +621,7 @@ export class CommandRunner {
         case command.startsWith('cast send '):
           this.html.renderCommandLoading()
           this.html.renderCommandResult(
-            JSON.stringify(await SendHandler.handleSendCommand(node, command), null, 2)
+            'cast send is under construction'
           )
           return;
 

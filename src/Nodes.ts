@@ -1,9 +1,17 @@
-import { base as baseCommon, mainnet as mainnetCommon, optimism as optimismCommon } from "tevm/common";
+import { 
+  base as baseCommon, 
+  mainnet as mainnetCommon, 
+  optimism as optimismCommon,
+  arbitrum as arbitrumCommon,
+  zora as zoraCommon,
+  polygon as polygonCommon, 
+  redstone as redstoneCommon, 
+ } from "tevm/common";
 import { Storage } from "./Storage";
 import { createTevmNode, http } from 'tevm'
 import type { Common } from 'tevm/common'
 
-export type SupportedNetwork = 'mainnet' | 'optimism' | 'base'
+export type SupportedNetwork = 'mainnet' | 'optimism' | 'base' | 'arbitrum' | 'zora' | 'polygon' | 'redstone'
 
 
 /**
@@ -35,6 +43,22 @@ export class Nodes {
     public base = {
       common: baseCommon,
       lazyLoadedNode: Nodes.lazyLoadedTevmNode(storage.getStoredUrl('base'), baseCommon),
+    },
+    public arbitrum = {
+      common: arbitrumCommon,
+      lazyLoadedNode: Nodes.lazyLoadedTevmNode(storage.getStoredUrl('arbitrum'), arbitrumCommon),
+    },
+    public zora = {
+      common: zoraCommon,
+      lazyLoadedNode: Nodes.lazyLoadedTevmNode(storage.getStoredUrl('zora'), zoraCommon),
+    },
+    public polygon = {
+      common: polygonCommon,
+      lazyLoadedNode: Nodes.lazyLoadedTevmNode(storage.getStoredUrl('polygon'), polygonCommon),
+    },
+    public redstone = {
+      common: redstoneCommon,
+      lazyLoadedNode: Nodes.lazyLoadedTevmNode(storage.getStoredUrl('redstone'), redstoneCommon),
     },
   ) { }
 

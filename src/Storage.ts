@@ -1,7 +1,13 @@
+import { redstone } from "tevm/common";
+
 const defaultUrls = {
   mainnet: 'https://eth-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
   optimism: 'https://opt-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
   base: 'https://base-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
+  arbitrum: 'https://arb-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
+  zora: 'https://zora-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
+  polygon: 'https://polygon-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
+  redstone: redstone.rpcUrls.default.http[0],
 };
 
 export class Storage {

@@ -6,7 +6,7 @@ export class SendHandler {
   public static readonly handleSendCommand = async (node: TevmNode, command: string) => {
     const parts = command.split(' ');
     if (parts.length < 3) {
-      throw new Error('Usage: cast send <to> <sig> [args...] [--from <address>] [--value <value>] [--gas-limit <limit>] [--gas-price <price>] [--nonce <nonce>]');
+      throw new Error('Usage: cast send <to> <sig> [args...] --from <address> [--value <value>] [--gas-limit <limit>] [--gas-price <price>] [--nonce <nonce>]');
     }
     const to = parts[1] as `0x${string}`;
     let sig = parts[2];
