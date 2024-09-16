@@ -1,7 +1,7 @@
 import { type Hex, type TevmNode, encodeFunctionData, decodeFunctionResult } from "tevm";
 import { hexToBigInt, hexToBytes, keccak256, numberToHex } from "viem";
 import { HelpText } from "./HelpText.js";
-import { createAddress, create2ContractAddress,createContractAddress} from "tevm/address";
+import { createAddress, create2ContractAddress, createContractAddress } from "tevm/address";
 import type { Html } from "./Html";
 import { CallHandler } from "./CallHandler";
 import { SendHandler } from "./SendHandler.js";
@@ -264,46 +264,46 @@ export class CommandRunner {
           return;
         }
         case command === 'cast compute-address':
-          case command.startsWith('cast compute-address ') && (command.includes('--help') || command.includes('-h')):
+        case command.startsWith('cast compute-address ') && (command.includes('--help') || command.includes('-h')):
+          this.html.renderCommandResult(HelpText.computeAddressHelp);
+          return;
+
+        case command.startsWith('cast compute-address '): {
+          this.html.renderCommandLoading();
+          const parts = command.split(' ');
+          if (parts.length < 3) {
             this.html.renderCommandResult(HelpText.computeAddressHelp);
             return;
-  
-          case command.startsWith('cast compute-address '): {
-            this.html.renderCommandLoading();
-            const parts = command.split(' ');
-            if (parts.length < 3) {
-              this.html.renderCommandResult(HelpText.computeAddressHelp);
-              return;
-            }
-            const deployer = parts[2];
-            const nonce = parts[3] ? BigInt(parts[3]) : undefined;
-  
-            try {
-              let computedAddress: EthjsAddress;
-              if (nonce !== undefined) {
-                // Compute address with provided nonce
-                computedAddress = createContractAddress(
-                  createAddress(deployer),
-                  nonce
-                );
-              } else {
-                // Compute address without nonce (use current nonce)
-                const currentNonce = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(deployer))).then(account => account?.nonce ?? 0n);
-                computedAddress = createContractAddress(
-                  createAddress(deployer),
-                  currentNonce
-               );
-              }
-  
-              this.html.renderCommandResult(computedAddress.toString());
-            } catch (error) {
-              console.error(error);
-              this.html.renderCommandResult(`Error: ${error instanceof Error ? error.message : String(error)}`);
-            }
-            return;
           }
+          const deployer = parts[2];
+          const nonce = parts[3] ? BigInt(parts[3]) : undefined;
 
-          case command === 'cast create2':
+          try {
+            let computedAddress: EthjsAddress;
+            if (nonce !== undefined) {
+              // Compute address with provided nonce
+              computedAddress = createContractAddress(
+                createAddress(deployer),
+                nonce
+              );
+            } else {
+              // Compute address without nonce (use current nonce)
+              const currentNonce = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(deployer))).then(account => account?.nonce ?? 0n);
+              computedAddress = createContractAddress(
+                createAddress(deployer),
+                currentNonce
+              );
+            }
+
+            this.html.renderCommandResult(computedAddress.toString());
+          } catch (error) {
+            console.error(error);
+            this.html.renderCommandResult(`Error: ${error instanceof Error ? error.message : String(error)}`);
+          }
+          return;
+        }
+
+        case command === 'cast create2':
         case command.startsWith('cast create2 ') && (command.includes('--help') || command.includes('-h')):
           this.html.renderCommandResult(HelpText.create2Help);
           return;
@@ -334,53 +334,53 @@ export class CommandRunner {
           return;
         }
 
-          case command.startsWith('cast gas-price ') && (command.includes('--help') || command.includes('-h')):
-            this.html.renderCommandResult(HelpText.gasPriceHelp);
-            return;
-  
-          case command.startsWith('cast gas-price'): {
-            this.html.renderCommandLoading();
-            const request = {
-              jsonrpc: '2.0',
-              id: 1,
-              method: 'eth_gasPrice',
-              params: [],
-            } as const;
-            const response = await gasPriceProcedure(node)(request);
-            
-            if ('error' in response && response.error !== undefined) {
-              this.html.renderCommandResult(`Error: ${response.error.message}`);
-            } else {
-              this.html.renderCommandResult(response.result);
-            }
-            return;
+        case command.startsWith('cast gas-price ') && (command.includes('--help') || command.includes('-h')):
+          this.html.renderCommandResult(HelpText.gasPriceHelp);
+          return;
+
+        case command.startsWith('cast gas-price'): {
+          this.html.renderCommandLoading();
+          const request = {
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'eth_gasPrice',
+            params: [],
+          } as const;
+          const response = await gasPriceProcedure(node)(request);
+
+          if ('error' in response && response.error !== undefined) {
+            this.html.renderCommandResult(`Error: ${response.error.message}`);
+          } else {
+            this.html.renderCommandResult(response.result);
           }
+          return;
+        }
 
 
         case command.startsWith('cast balance ') && (command.includes('--help') || command.includes('-h')):
-          case command.startsWith('cast b ') && (command.includes('--help') || command.includes('-h')):
-            this.html.renderCommandResult(HelpText.balanceHelp);
-            return;
-  
-          case command.startsWith('cast balance '):
-          case command.startsWith('cast b '): {
-            this.html.renderCommandLoading();
-            const balanceAddress = command.split(' ')[2];
-            if (!balanceAddress) {
-              this.html.renderCommandResult('Address is required for balance query');
-              return;
-            }
-            try {
-              const balance = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(balanceAddress))).then(account => account?.balance ?? 0n);
-              this.html.renderCommandResult(balance.toString());
-            } catch (error) {
-              console.error(error);
-              this.html.renderCommandResult(`Error: ${error instanceof Error ? error.message : String(error)}`);
-            }
+        case command.startsWith('cast b ') && (command.includes('--help') || command.includes('-h')):
+          this.html.renderCommandResult(HelpText.balanceHelp);
+          return;
+
+        case command.startsWith('cast balance '):
+        case command.startsWith('cast b '): {
+          this.html.renderCommandLoading();
+          const balanceAddress = command.split(' ')[2];
+          if (!balanceAddress) {
+            this.html.renderCommandResult('Address is required for balance query');
             return;
           }
+          try {
+            const balance = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(balanceAddress))).then(account => account?.balance ?? 0n);
+            this.html.renderCommandResult(balance.toString());
+          } catch (error) {
+            console.error(error);
+            this.html.renderCommandResult(`Error: ${error instanceof Error ? error.message : String(error)}`);
+          }
+          return;
+        }
 
-          case command === 'cast logs':
+        case command === 'cast logs':
         case command.startsWith('cast logs ') && (command.includes('--help') || command.includes('-h')):
           this.html.renderCommandResult(HelpText.logsHelp);
           return;
@@ -424,7 +424,7 @@ export class CommandRunner {
                 address: address ? createAddress(address).toString() : undefined,
                 topics: topics?.length ? [topics] : undefined,
               }],
-            } ;
+            };
 
             const response = await ethGetLogsProcedure(node)(request);
 
@@ -582,13 +582,21 @@ export class CommandRunner {
           this.html.renderCommandResult(HelpText.blockHelp);
           return;
 
+        case command === 'cast block': {
+          this.html.renderCommandLoading();
+          const blockTag = 'latest'
+          const blockData = await node.getVm().then(vm => vm.blockchain.getBlockByTag(blockTag)).then(block => block.toJSON());
+          this.html.renderCommandResult(JSON.stringify(blockData, null, 2));
+          return;
+        }
         case command.startsWith('cast block '):
-        case command.startsWith('cast bl '):
+        case command.startsWith('cast bl '): {
           this.html.renderCommandLoading();
           const blockTag = CommandRunner.parseBlockTag(command.trim().split(' ').at(-1) as string);
           const blockData = await node.getVm().then(vm => vm.blockchain.getBlockByTag(blockTag)).then(block => block.toJSON());
           this.html.renderCommandResult(JSON.stringify(blockData, null, 2));
           return;
+        }
 
         case command === 'cast call':
         case command.startsWith('cast call ') && (command.includes('--help') || command.includes('-h')):
