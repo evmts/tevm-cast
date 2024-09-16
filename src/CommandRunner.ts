@@ -4,10 +4,18 @@ import { HelpText } from "./HelpText.js";
 import { createAddress, create2ContractAddress, createContractAddress } from "tevm/address";
 import type { Html } from "./Html";
 import { CallHandler } from "./CallHandler";
+import { SendHandler } from "./SendHandler.js";
 import { FetchFunctionSignature } from "./FetchFunctionSig.js";
 import { EthjsAddress } from "tevm/utils";
 import { EthGetLogsJsonRpcRequest, ethGetLogsProcedure, gasPriceProcedure } from 'tevm/procedures';
 
+function stringifyWithBigInt(obj: any): string {
+  return JSON.stringify(obj, (key, value) => 
+    typeof value === 'bigint' 
+      ? value.toString() 
+      : value
+  );
+}
 
 export class CommandRunner {
   constructor(private readonly html: Html) { }
@@ -620,7 +628,7 @@ export class CommandRunner {
         case command.startsWith('cast send '):
           this.html.renderCommandLoading()
           this.html.renderCommandResult(
-            'cast send is under construction'
+            stringifyWithBigInt(await SendHandler.handleSendCommand(node, command))
           )
           return;
 

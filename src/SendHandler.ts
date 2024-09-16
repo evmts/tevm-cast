@@ -8,12 +8,12 @@ export class SendHandler {
     if (parts.length < 3) {
       throw new Error('Usage: cast send <to> <sig> [args...] --from <address> [--value <value>] [--gas-limit <limit>] [--gas-price <price>] [--nonce <nonce>]');
     }
-    const to = parts[1] as `0x${string}`;
-    let sig = parts[2];
-    if (sig.startsWith('"') && sig.endsWith('"')) {
+    const to = parts[2] as `0x${string}`;
+    let sig = parts[3];
+    if (sig?.startsWith('"') && sig?.endsWith('"')) {
       sig = sig.slice(1, -1);
     }
-    const args = parts.slice(3).filter(arg => !arg.startsWith('--'));
+    const args = parts.slice(4).filter(arg => !arg.startsWith('--'));
 
     const functionName = sig.slice(0, sig.indexOf('('));
     const paramString = sig.slice(sig.indexOf('(') + 1, sig.lastIndexOf(')'));
@@ -22,8 +22,10 @@ export class SendHandler {
     const abi = [{ name: functionName, type: 'function', inputs: paramTypes.map(type => ({ type })), outputs: [] }];
 
     const parsedArgs = args.map((arg, index) => {
-      if (paramTypes[index].startsWith('uint') || paramTypes[index].startsWith('int')) {
-        return BigInt(arg);
+      if (index < paramTypes.length && paramTypes[index]) {
+        if (paramTypes[index].startsWith('uint') || paramTypes[index].startsWith('int')) {
+          return BigInt(arg);
+        }
       }
       return arg;
     });
@@ -61,25 +63,26 @@ export class SendHandler {
         to: options.to && createAddress(options.to),
         chainId: vm.common.id,
         value: options.value,
-        gasLimit: options.gasLimit,
-        gasPrice: options.gasPrice,
-        nonce: options.nonce,
+        gasLimit: options.gasLimit ?? (await vm.blockchain.getCanonicalHeadBlock()).header.gasLimit,
+        gasPrice: options.gasPrice ?? (await vm.blockchain.getCanonicalHeadBlock()).header.baseFeePerGas,
+        nonce: options.nonce ?? (await vm.stateManager.getAccount(createAddress(impersonatedAddress)))?.nonce ?? 0n,
+        maxFeePerGas: options.gasPrice ?? (await vm.blockchain.getCanonicalHeadBlock()).header.baseFeePerGas! * 2n,
       });
 
       const { runTx } = await import('tevm/vm');
-      const { 
+      const {
         receipt,
         amountSpent,
         bloom,
         execResult: {
-            executionGasUsed,
-            returnValue,
-            createdAddresses,
-            exceptionError,
-            gas,
-            logs,
-            runState,
-            selfdestruct
+          executionGasUsed,
+          returnValue,
+          createdAddresses,
+          exceptionError,
+          gas,
+          logs,
+          runState,
+          selfdestruct
         },
         gasRefund,
         minerValue,
@@ -88,13 +91,13 @@ export class SendHandler {
         blobGasUsed,
         createdAddress,
         preimages,
-       } = await runTx(vm)({ 
+      } = await runTx(vm)({
         tx,
         skipBalance: true,
         skipNonce: true,
         skipBlockGasLimitValidation: true,
         skipHardForkValidation: true,
-     });
+      });
 
       return {
         executionGasUsed: executionGasUsed.toString(),
@@ -107,17 +110,14 @@ export class SendHandler {
           topics: log[1].map(topic => bytesToHex(topic)),
           data: bytesToHex(log[2])
         })),
-        runState: runState ? runState : undefined,
-        selfdestruct: selfdestruct ? Array.from(selfdestruct).map(addr => addr.toString()) : undefined,
         receipt: receipt,
         amountSpent: amountSpent !== undefined ? amountSpent.toString() : undefined,
-        bloom: bloom !== undefined ? bytesToHex(bloom.bitvector) : undefined,
         gasRefund: gasRefund !== undefined ? gasRefund.toString() : undefined,
         minerValue: minerValue !== undefined ? minerValue.toString() : undefined,
         totalGasSpent: totalGasSpent !== undefined ? totalGasSpent.toString() : undefined,
         accessList: accessList,
         blobGasUsed: blobGasUsed !== undefined ? blobGasUsed.toString() : undefined,
-        createdAddress: createdAddress?.toString(),
+        createdAddress: createdAddress,
         preimages: preimages
       };
     } catch (error) {
