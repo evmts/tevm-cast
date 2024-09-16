@@ -1,306 +1,388 @@
+body {
+    font-family: "Courier New", Courier, monospace;
+    background-color: #000080;
+    color: #00FF00;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    background-image: radial-gradient(#0000FF 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 3px solid #00FF00;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px #00FF00, inset 0 0 10px #00FF00;
+    display: 'flex';
+}
+
+h1 {
+    color: #FFFF00;
+    text-shadow: 2px 2px #FF00FF, -2px -2px #00FFFF;
+    font-size: 36px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+select,
+button {
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+select,
+textarea,
+input,
+button {
+    padding: 10px;
+    margin: 10px 0;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    background-color: #000000;
+    color: #00FF00;
+    border: 2px solid #00FF00;
+    border-radius: 5px;
+}
+
+textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 40px;
+    height: auto;
+    resize: vertical;
+    overflow-y: auto;
+}
+
+textarea::-webkit-scrollbar {
+    width: 10px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #000080;
+    border-radius: 5px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #00FF00;
+    border-radius: 5px;
+    border: 2px solid #000080;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #00FFFF;
+}
+
+/* For Firefox */
+textarea {
+    scrollbar-width: thin;
+    scrollbar-color: #00FF00 #000080;
+}
+
+select:focus,
+textarea:focus,
+input:focus {
+    outline: none;
+    border-color: #FF00FF;
+    box-shadow: 0 0 10px #FF00FF;
+}
+
+button {
+    background-color: #008000;
+    color: #FFFF00;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s ease-out;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    background-color: #FF00FF;
+    color: #FFFF00;
+    box-shadow: 0 0 15px #FF00FF;
+}
+
+button:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 5px #FF00FF;
+}
+
+button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+button:active::after {
+    animation: ripple 0.4s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 1;
+    }
+
+    20% {
+        transform: scale(25, 25);
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(40, 40);
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid #00FF00;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #008000;
+    color: #FFFF00;
+    text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+    background-color: rgba(0, 128, 0, 0.2);
+}
+
+#helpIcon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    background-color: #FF00FF;
+    color: #FFFF00;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+    border: 2px solid #FFFF00;
+    text-shadow: 1px 1px #000000;
+    overflow: hidden;
+}
+
+#helpIcon:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 0 20px #FFFF00;
+}
+
+#helpIcon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+#helpIcon:active::after {
+    animation: ripple 0.4s ease-out;
+}
+
+#helpContent {
+    display: none;
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00FF00;
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 1000;
+    box-shadow: 0 0 15px #00FF00;
+}
+
+#output,
+#skeletonLoader,
+#rpcUrl {
+    overflow-wrap: break-word;
+    background-color: #000000;
+    border: 2px solid #00FF00;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: left;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: inset 0 0 10px #00FF00;
+}
+
+#output {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#output:hover {
+    background-color: #001100;
+}
+
+#skeletonLoader {
+    display: none;
+}
+
+.skeleton-line {
+    height: 20px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #000000 25%, #008000 50%, #000000 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 5px;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.blink {
+    animation: blink 1s steps(1) infinite;
+}
+
+@media (max-width: 600px) {
     body {
-        font-family: "Courier New", Courier, monospace;
-        background-color: #000080;
-        color: #00FF00;
-        margin: 0;
-        padding: 20px;
-        text-align: center;
-        background-image: radial-gradient(#0000FF 1px, transparent 1px);
-        background-size: 20px 20px;
+        padding: 10px;
     }
+
     .container {
-        max-width: 800px;
-        margin: 0 auto;
-        background-color: rgba(0, 0, 0, 0.8);
-        border: 3px solid #00FF00;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0 0 20px #00FF00, inset 0 0 10px #00FF00;
-        display: 'flex';
+        padding: 10px;
     }
+
     h1 {
-        color: #FFFF00;
-        text-shadow: 2px 2px #FF00FF, -2px -2px #00FFFF;
-        font-size: 36px;
-        margin-bottom: 20px;
-        letter-spacing: 2px;
+        font-size: 28px;
     }
-    select, button {
-        width: 100%;
-    }
-    input {
-        width: 100%;
-        box-sizing: border-box;
-    }
-    select, textarea, input, button {
-        padding: 10px;
-        margin: 10px 0;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 16px;
-        background-color: #000000;
-        color: #00FF00;
-        border: 2px solid #00FF00;
-        border-radius: 5px;
-    }
-    textarea {
-        box-sizing: border-box;
-        width: 100%;
-        min-height: 40px;
-        height: auto;
-        resize: vertical;
-        overflow-y: auto;
-    }
-    textarea::-webkit-scrollbar {
-        width: 10px;
-    }
-    
-    textarea::-webkit-scrollbar-track {
-        background: #000080;
-        border-radius: 5px;
-    }
-    
-    textarea::-webkit-scrollbar-thumb {
-        background: #00FF00;
-        border-radius: 5px;
-        border: 2px solid #000080;
-    }
-    
-    textarea::-webkit-scrollbar-thumb:hover {
-        background: #00FFFF;
-    }
-    
-    /* For Firefox */
-    textarea {
-        scrollbar-width: thin;
-        scrollbar-color: #00FF00 #000080;
-    }
-    select:focus, textarea:focus, input:focus {
-        outline: none;
-        border-color: #FF00FF;
-        box-shadow: 0 0 10px #FF00FF;
-    }
-    button {
-        background-color: #008000;
-        color: #FFFF00;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.15s ease-out;
-        text-transform: uppercase;
-        position: relative;
-        overflow: hidden;
-    }
-    button:hover {
-        background-color: #FF00FF;
-        color: #FFFF00;
-        box-shadow: 0 0 15px #FF00FF;
-    }
-    button:active {
-        transform: scale(0.95);
-        box-shadow: 0 0 5px #FF00FF;
-    }
-    button::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 5px;
-        height: 5px;
-        background: rgba(255, 255, 255, 0.5);
-        opacity: 0;
-        border-radius: 100%;
-        transform: scale(1, 1) translate(-50%);
-        transform-origin: 50% 50%;
-    }
-    button:active::after {
-        animation: ripple 0.4s ease-out;
-    }
-    @keyframes ripple {
-        0% {
-            transform: scale(0, 0);
-            opacity: 1;
-        }
-        20% {
-            transform: scale(25, 25);
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-            transform: scale(40, 40);
-        }
-    }
-    table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        margin-top: 20px;
-    }
-    th, td {
-        border: 1px solid #00FF00;
-        padding: 10px;
-        text-align: left;
-    }
-    th {
-        background-color: #008000;
-        color: #FFFF00;
-        text-transform: uppercase;
-    }
-    tr:nth-child(even) {
-        background-color: rgba(0, 128, 0, 0.2);
-    }
+
     #helpIcon {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        font-size: 24px;
-        cursor: pointer;
-        background-color: #FF00FF;
-        color: #FFFF00;
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-        text-align: center;
-        border-radius: 50%;
-        transition: all 0.3s;
-        border: 2px solid #FFFF00;
-        text-shadow: 1px 1px #000000;
-        overflow: hidden;
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 18px;
     }
-    #helpIcon:hover {
-        transform: scale(1.1) rotate(15deg);
-        box-shadow: 0 0 20px #FFFF00;
-    }
-    #helpIcon::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 5px;
-        height: 5px;
-        background: rgba(255, 255, 255, 0.5);
-        opacity: 0;
-        border-radius: 100%;
-        transform: scale(1, 1) translate(-50%);
-        transform-origin: 50% 50%;
-    }
-    #helpIcon:active::after {
-        animation: ripple 0.4s ease-out;
-    }
-    #helpContent {
-        display: none;
-        position: fixed;
-        top: 70px;
-        right: 20px;
-        background-color: rgba(0, 0, 0, 0.9);
-        border: 2px solid #00FF00;
-        padding: 15px;
-        border-radius: 10px;
-        z-index: 1000;
-        box-shadow: 0 0 15px #00FF00;
-    }
-    #output, #skeletonLoader, #rpcUrl {
-        overflow-wrap: break-word;
-        background-color: #000000;
-        border: 2px solid #00FF00;
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 20px;
-        text-align: left;
-        white-space: pre-wrap;
-        font-size: 14px;
-        line-height: 1.5;
-        box-shadow: inset 0 0 10px #00FF00;
-    }
-    #output {
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    #output:hover {
-        background-color: #001100;
-    }
-    #skeletonLoader {
-        display: none;
-    }
-    .skeleton-line {
-        height: 20px;
-        margin-bottom: 10px;
-        background: linear-gradient(90deg, #000000 25%, #008000 50%, #000000 75%);
-        background-size: 200% 100%;
-        animation: loading 1.5s infinite;
-        border-radius: 5px;
-    }
-    @keyframes loading {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
-    }
-    .blink {
-        animation: blink 1s steps(1) infinite;
-    }
-    @media (max-width: 600px) {
-        body {
-            padding: 10px;
-        }
-        .container {
-            padding: 10px;
-        }
-        h1 {
-            font-size: 28px;
-        }
-        #helpIcon {
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            font-size: 18px;
-        }
-    }
+}
 
-    #historyContainer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-direction: row;
-    }
-    #historyContainer > * {
-        margin: 0 5px;
-    }
-    #historyContainer > *:nth-child(2) {
-        margin-left: 0;
-    }
-    #historyContainer > *:last-child {
-        margin-right: 0;
-    }
+#historyContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
 
-    #networkInfo {
-        margin-bottom: 16px
-    }
+#historyContainer>* {
+    margin: 0 5px;
+}
 
-    footer {
-        max-width: 800px;
-        margin: 20px auto 0;
-        padding: 10px;
-        background-color: rgba(0, 0, 0, 0.6);
-        border-radius: 5px;
-        border: 1px solid #00FF00;
-    }
+#historyContainer>*:nth-child(2) {
+    margin-left: 0;
+}
 
-    footer p {
-        color: #00FF00;
-        font-size: 14px;
-        margin: 0;
-    }
+#historyContainer>*:last-child {
+    margin-right: 0;
+}
 
-    footer a {
-        color: #FFFF00;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
+#networkInfo {
+    margin-bottom: 16px
+}
 
-    footer a:hover {
-        color: #FF00FF;
-        text-decoration: underline;
-    }
+footer {
+    max-width: 800px;
+    margin: 20px auto 0;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    border: 1px solid #00FF00;
+}
+
+footer p {
+    color: #00FF00;
+    font-size: 14px;
+    margin: 0;
+}
+
+footer a {
+    color: #FFFF00;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #FF00FF;
+    text-decoration: underline;
+}
+
+
+.json-key {
+    color: #d14;
+}
+
+.json-string {
+    color: #4CAF50;
+}
+
+.json-number {
+    color: #2980b9;
+}
+
+.json-boolean {
+    color: #e67e22;
+}
+
+.json-null {
+    color: #8e44ad;
+}

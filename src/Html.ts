@@ -25,7 +25,12 @@ export class Html {
   public readonly renderCommandResult = (content: string) => {
     this.skeletonLoader.style.display = 'none';
     this.output.style.display = 'block';
-    this.output.textContent = content;
+    if (this.isJson(content)) {
+      const highlightedJson = this.syntaxHighlight(content);
+      this.output.innerHTML = highlightedJson;
+    } else {
+      this.output.textContent = content;
+    }
   };
 
   public readonly renderHistoryDropdown = (history: string[]) => {
@@ -40,30 +45,59 @@ export class Html {
     });
   }
 
-    /**
-     * Focuses on the command input and registers the Enter key listener.
-     * Removes the listener when the input loses focus.
-     */
-    public readonly focusOnCommandInput = () => {
-        this.commandInput.focus();
-        this.addEnterKeyListener()
-    }
+  /**
+   * Focuses on the command input and registers the Enter key listener.
+   * Removes the listener when the input loses focus.
+   */
+  public readonly focusOnCommandInput = () => {
+    this.commandInput.focus();
+    this.addEnterKeyListener()
+  }
 
-    public readonly addEnterKeyListener = () => {
-        this.commandInput.addEventListener('keydown', this.handleCommandEnterKey);
-        this.commandInput.addEventListener('blur', () => {
-            this.commandInput.removeEventListener('keydown', this.handleCommandEnterKey);
-        });
-    }
+  public readonly addEnterKeyListener = () => {
+    this.commandInput.addEventListener('keydown', this.handleCommandEnterKey);
+    this.commandInput.addEventListener('blur', () => {
+      this.commandInput.removeEventListener('keydown', this.handleCommandEnterKey);
+    });
+  }
 
-    /**
-     * Handles the Enter key press on the command input.
-     * Triggers the run button click when Enter is pressed.
-     */
-    public readonly handleCommandEnterKey = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-            event.preventDefault(); 
-            this.runButton.click(); 
+  /**
+   * Handles the Enter key press on the command input.
+   * Triggers the run button click when Enter is pressed.
+   */
+  public readonly handleCommandEnterKey = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); 
+      this.runButton.click(); 
+    }
+  };
+
+  private syntaxHighlight(json: string): string {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+      let cls = 'json-number';
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = 'json-key';
+        } else {
+          cls = 'json-string';
         }
-    };
+      } else if (/true|false/.test(match)) {
+        cls = 'json-boolean';
+      } else if (/null/.test(match)) {
+        cls = 'json-null';
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+    });
+  }
+
+  private isJson(str: string): boolean {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
