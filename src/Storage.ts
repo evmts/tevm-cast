@@ -8,6 +8,7 @@ const defaultUrls = {
   zora: 'https://zora-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
   polygon: 'https://polygon-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
   redstone: redstone.rpcUrls.default.http[0],
+  sepolia: 'https://eth-sepolia.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
 };
 
 export class Storage {

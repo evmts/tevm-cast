@@ -6,6 +6,7 @@ import {
   zora as zoraCommon,
   polygon as polygonCommon, 
   redstone as redstoneCommon, 
+  sepolia as sepoliaCommon,
  } from "tevm/common";
 import { Storage } from "./Storage";
 import { createTevmNode, http } from 'tevm'
@@ -59,6 +60,10 @@ export class Nodes {
     public redstone = {
       common: redstoneCommon,
       lazyLoadedNode: Nodes.lazyLoadedTevmNode(storage.getStoredUrl('redstone'), redstoneCommon),
+    },
+    public sepolia = {
+      common: sepoliaCommon,
+      lazyLoadedNode: Nodes.lazyLoadedTevmNode(storage.getStoredUrl('sepolia'), sepoliaCommon),
     },
   ) { }
 
