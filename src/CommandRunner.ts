@@ -4,7 +4,6 @@ import { HelpText } from "./HelpText.js";
 import { createAddress, create2ContractAddress, createContractAddress } from "tevm/address";
 import type { Html } from "./Html";
 import { CallHandler } from "./CallHandler";
-import { SendHandler } from "./SendHandler.js";
 import { FetchFunctionSignature } from "./FetchFunctionSig.js";
 import { EthjsAddress } from "tevm/utils";
 import { EthGetLogsJsonRpcRequest, ethGetLogsProcedure, gasPriceProcedure } from 'tevm/procedures';

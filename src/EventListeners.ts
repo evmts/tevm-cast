@@ -98,7 +98,13 @@ export class EventListeners {
          */
         html.runButton.addEventListener('click', async function onRunButtonClick() {
             const nodes = await getTevmNodes()
-            const command = html.commandInput.value.trim().toLowerCase();
+            let command = html.commandInput.value.trim()
+            if (command.startsWith('Cast')) {
+                command = command.replace('Cast', 'cast')
+            }
+            if (!command.startsWith('cast')) {
+                command = `cast ${command}`
+            }
             const currentNetwork = nodes.network;
             const node = await nodes[currentNetwork].lazyLoadedNode;
 
