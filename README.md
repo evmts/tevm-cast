@@ -67,6 +67,16 @@ To run this project locally:
 
 Contributions are welcome! Please feel free to submit a Pull Request. Especially looking for contributions to add more cast commands.
 
+#### Adding a new network
+
+1. Add it to local storage https://github.com/evmts/tevm-cast/blob/main/src/Storage.ts#L1
+2. Add to html https://github.com/evmts/tevm-cast/blob/main/index.html#L37
+3. Add a tevm node https://github.com/evmts/tevm-cast/blob/main/src/Nodes.ts#L35
+
+#### Adding or updating a command
+
+Check [src/CommandRunner.ts](./src/CommandRunner.ts]
+
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
