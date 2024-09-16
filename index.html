@@ -45,7 +45,15 @@
         </select>
 
         <label for="rpcUrl" style="display:none">RPC URL:</label>
-        <input type="text" placeholder="https://mainnet.optimism.io" id="rpcUrl" style="display:none">
+        <input 
+          type="text"
+          id="rpcUrl"
+          autocomplete="off"
+          spellcheck="false"
+          autocapitalize="off"
+          style="display:none"
+          placeholder="https://mainnet.optimism.io"
+        >
 
         <table id="networkInfo" style="display:none;">
             <caption>Network Information</caption>
@@ -76,7 +84,13 @@
         </div>
 
         <label for="commandInput" style="display:none">Enter a command:</label>
-        <textarea id="commandInput" placeholder="enter a command like 'cast bn'"></textarea>
+        <textarea
+          id="commandInput"
+          autocomplete="off"
+          spellcheck="false"
+          autocapitalize="off"
+          placeholder="enter a command like 'cast bn'"
+        ></textarea>
         <button id="runButton">Run</button>
         
         <div id="skeletonLoader" aria-hidden="true">
