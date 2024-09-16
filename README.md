@@ -1,8 +1,6 @@
 # Tevm Cast Clone
 
 - [Tevm cast website](https://tevm-cast.vercel.app)
-- [repost on farcaster](https://warpcast.com/fucory/0x465af267)
-- [retweet on twitter](https://x.com/FUCORY/status/1835094677550514395)
 
 Tevm Cast Clone is a web-based Ethereum command-line interface (CLI) emulator similar to [foundry cast](https://book.getfoundry.sh/cast/).
 
