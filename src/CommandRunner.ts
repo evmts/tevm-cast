@@ -10,9 +10,9 @@ import { EthjsAddress } from "tevm/utils";
 import { EthGetLogsJsonRpcRequest, ethGetLogsProcedure, gasPriceProcedure } from 'tevm/procedures';
 
 function stringifyWithBigInt(obj: any): string {
-  return JSON.stringify(obj, (key, value) => 
-    typeof value === 'bigint' 
-      ? value.toString() 
+  return JSON.stringify(obj, (key, value) =>
+    typeof value === 'bigint'
+      ? value.toString()
       : value
   );
 }
@@ -38,6 +38,7 @@ export class CommandRunner {
     try {
       switch (true) {
         case '' === command:
+        case 'cast' === command:
         case 'cast' === command:
         case 'cast --help' === command:
         case 'cast -h' === command:
