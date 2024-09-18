@@ -198,6 +198,7 @@ export class CommandRunner {
           this.html.renderCommandResult(HelpText.baseFeeHelp);
           return;
 
+        case command === 'cast base-fee':
         case command.startsWith('cast base-fee '):
         case command.startsWith('cast ba '):
         case command.startsWith('cast fee '):

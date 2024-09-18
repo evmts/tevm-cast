@@ -35,15 +35,31 @@
 
         <label for="networkSelect" style="display:none">Select a network:</label>
         <select id="networkSelect">
-            <option value="">Select a network</option>
             <option value="mainnet">Mainnet</option>
+            <option value="newChain">New Chain</option>
+            <option disabled>──────────</option>
             <option value="arbitrum">Arbitrum</option>
+            <option value="arbitrumNova">Arbitrum Nova</option>
+            <option value="avalanche">Avalanche</option>
             <option value="base">Base</option>
+            <option value="berachain">Berachain</option>
+            <option value="blast">Blast</option>
+            <option value="celo">Celo</option>
+            <option value="manta">Manta</option>
+            <option value="mantle">Mantle</option>
             <option value="optimism">Optimism</option>
             <option value="polygon">Polygon</option>
             <option value="redstone">Redstone</option>
+            <option value="scroll">Scroll</option>
+            <option value="zksync">zkSync</option>
             <option value="zora">Zora</option>
+            <option disabled>──────────</option>
+            <option value="arbitrumSepolia">Arbitrum Sepolia</option>
+            <option value="baseSepolia">Base Sepolia</option>
+            <option value="optimismSepolia">Optimism Sepolia</option>
             <option value="sepolia">Sepolia</option>
+            <option value="zksyncSepolia">zkSync Sepolia</option>
+            <option value="zoraSepolia">Zora Sepolia</option>
         </select>
 
         <label for="rpcUrl" style="display:none">RPC URL:</label>
@@ -76,7 +92,6 @@
                 <td id="forkBlock"></td>
             </tr>
         </table>
-
         <div id="historyContainer">
             <label for="historyDropdown" style="display:none">Command History:</label>
             <select id="historyDropdown">
@@ -84,8 +99,9 @@
                 <option value="cast --help">cast --help</option>
             </select>
         </div>
+        <button id="exampleButton">Example</button>
 
-        <label for="commandInput" value="cast call 0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb balanceOf(address) 0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb --trace --access-list" style="display:none">Enter a command:</label>
+        <label for="commandInput" style="display:none">Enter a command:</label>
         <textarea
           id="commandInput"
           autocomplete="off"

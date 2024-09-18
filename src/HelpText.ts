@@ -12,7 +12,7 @@ Commands:
   *access-list           Create an access list for a transaction [aliases: al] (New feature!)
   age                    Get the timestamp of a block (New feature!)
   balance                Get the balance of an account in wei [aliases: b] (New feature!)
-  *base-fee              Get the base fee of a block (New feature!)
+  base-fee               Get the base fee of a block (New feature!)
   block                  Get information about a block [aliases: bl]
   block-number           Get the latest block number [aliases: bn]
   call                   Perform a call [aliases: c]
@@ -26,7 +26,7 @@ Commands:
   logs                   Get logs by signature or topic [aliases: l] (New feature!)
   nonce                  Get the nonce for an account [aliases: n]
   *receipt               Get information about a transaction [aliases: r] (New feature!)
-  send             Publish a transaction to fork. All accounts are automatically impersonated (New feature!)
+  send                   Publish a transaction to fork. All accounts are automatically impersonated (New feature!)
   *sig                   Get the selector for a function [aliases: s] (New feature!)
   storage                Get the raw value of a contract's storage slot [aliases: st]
 

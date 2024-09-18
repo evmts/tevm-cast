@@ -16,6 +16,7 @@ export class Html {
   public readonly helpIcon = document.getElementById('helpIcon')! as HTMLDivElement;
   public readonly runButton = document.getElementById('runButton')! as HTMLButtonElement;
   public readonly historyDropdown = document.getElementById('historyDropdown')! as HTMLSelectElement;
+  public readonly exampleButton = document.getElementById('exampleButton')! as HTMLButtonElement;
 
   public readonly renderCommandLoading = () => {
     this.output.style.display = 'none';

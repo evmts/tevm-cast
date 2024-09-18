@@ -1,14 +1,34 @@
 import { redstone } from "tevm/common";
+import { SupportedNetwork } from "./Nodes";
+
+const alchemyApiKey = 'beaEwjczm1iCOAcSco_F8QbtqnwnginU';
+
+const alchemyUrls = {
+  mainnet: `https://eth-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
+  sepolia: `https://eth-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+  optimism: `https://opt-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
+  optimismSepolia: `https://opt-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+  polygon: `https://polygon-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
+  arbitrum: `https://arb-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
+  arbitrumSepolia: `https://arb-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+  zora: `https://zora-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
+  zoraSepolia: `https://zora-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+  base: `https://base-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
+  baseSepolia: `https://base-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+  zksync: `https://zksync-era.g.alchemy.com/v2/${alchemyApiKey}`,
+  zksyncSepolia: `https://zksync-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+};
 
 const defaultUrls = {
-  mainnet: 'https://eth-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
-  optimism: 'https://opt-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
-  base: 'https://base-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
-  arbitrum: 'https://arb-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
-  zora: 'https://zora-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
-  polygon: 'https://polygon-mainnet.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
   redstone: redstone.rpcUrls.default.http[0],
-  sepolia: 'https://eth-sepolia.g.alchemy.com/v2/beaEwjczm1iCOAcSco_F8QbtqnwnginU',
+  arbitrumNova: 'https://nova.arbitrum.io/rpc',
+  celo: 'https://forno.celo.org',
+  berachain: 'https://artio.testnet.berachain.com',
+  scroll: 'https://rpc.scroll.io',
+  blast: 'https://rpc.blast.io',
+  avalanche: 'https://api.avax.network/ext/bc/C/rpc',
+  manta: 'https://pacific-rpc.manta.network/http',
+  mantle: 'https://rpc.mantle.xyz',
 };
 
 export class Storage {
@@ -19,20 +39,29 @@ export class Storage {
     const baseUrl = localStorage.getItem('rpcUrl_base');
 
     if (mainnetUrl && mainnetUrl.includes('cloudflare')) {
-      localStorage.setItem('rpcUrl_mainnet', defaultUrls.mainnet);
+      localStorage.setItem('rpcUrl_mainnet', alchemyUrls.mainnet);
     }
 
     if (optimismUrl && optimismUrl.includes('mainnet.optimism.io')) {
-      localStorage.setItem('rpcUrl_optimism', defaultUrls.optimism);
+      localStorage.setItem('rpcUrl_optimism', alchemyUrls.optimism);
     }
 
     if (baseUrl && baseUrl.includes('https://mainnet.base.org')) {
-      localStorage.setItem('rpcUrl_base', defaultUrls.base);
+      localStorage.setItem('rpcUrl_base', alchemyUrls.base);
     }
   }
 
-  getStoredUrl(network: string): string {
-    return localStorage.getItem(`rpcUrl_${network}`) || defaultUrls[network];
+  public getStoredUrl(network: SupportedNetwork): string {
+    const storedUrl = localStorage.getItem(`rpcUrl_${network}`);
+    if (storedUrl) return storedUrl;
+    
+    if (network in alchemyUrls) {
+      return alchemyUrls[network];
+    } else if (network in defaultUrls) {
+      return defaultUrls[network];
+    } else {
+      return ''; // For networks without a default URL
+    }
   }
 
   setStoredUrl(network: string, url: string) {

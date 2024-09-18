@@ -188,5 +188,17 @@ export class EventListeners {
         html.commandInput.addEventListener('focus', function onInputFocus() {
             html.addEnterKeyListener();
         });
+
+        /**
+         * Event listener for the example button.
+         * Sets the network to mainnet, fills the command input with an example command,
+         * and triggers the run button click.
+         */
+        html.exampleButton.addEventListener('click', function onExampleButtonClick() {
+            html.networkSelect.value = 'mainnet';
+            html.networkSelect.dispatchEvent(new Event('change'));
+            html.commandInput.value = 'cast call 0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb "balanceOf(address)" 0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb --trace --access-list';
+            html.runButton.click();
+        });
     }
 }
