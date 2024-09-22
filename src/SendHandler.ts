@@ -1,6 +1,6 @@
-import { PREFUNDED_ACCOUNTS, type TevmNode } from "tevm";
+import type { TevmNode } from "tevm";
 import { bytesToHex, encodeFunctionData, hexToBytes } from "viem";
-import { createAddress } from "tevm/address";
+import { LazyTevm } from "./LazyTevm";
 
 export class SendHandler {
   public static readonly handleSendCommand = async (node: TevmNode, command: string) => {
@@ -39,7 +39,7 @@ export class SendHandler {
 
     // Parse additional options
     const fromIndex = parts.indexOf('--from');
-    const impersonatedAddress = fromIndex !== -1 ? parts[fromIndex + 1] : PREFUNDED_ACCOUNTS[0].address;
+    const impersonatedAddress = fromIndex !== -1 ? parts[fromIndex + 1] : (await LazyTevm.getPrefundedAccounts())[0].address;
 
     const valueIndex = parts.indexOf('--value');
     if (valueIndex !== -1) options.value = BigInt(parts[valueIndex + 1]);
@@ -65,15 +65,15 @@ export class SendHandler {
       const maxFeePerGas = baseFeePerGas + maxPriorityFeePerGas; // Ensure maxFeePerGas is always higher
 
       const tx = createImpersonatedTx({
-        impersonatedAddress: createAddress(impersonatedAddress),
+        impersonatedAddress: await LazyTevm.createAddress(impersonatedAddress),
         data: hexToBytes(options.data),
-        to: options.to && createAddress(options.to),
+        to: options.to && await LazyTevm.createAddress(options.to),
         chainId: vm.common.id,
         value: options.value,
         gasLimit: options.gasLimit ?? (await vm.blockchain.getCanonicalHeadBlock()).header.gasLimit,
         maxFeePerGas: options.gasPrice ?? maxFeePerGas,
         maxPriorityFeePerGas,
-        nonce: options.nonce ?? (await vm.stateManager.getAccount(createAddress(impersonatedAddress)))?.nonce ?? 0n,
+        nonce: options.nonce ?? (await vm.stateManager.getAccount(await LazyTevm.createAddress(impersonatedAddress)))?.nonce ?? 0n,
       });
 
       const { runTx } = await import('tevm/vm');

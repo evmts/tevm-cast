@@ -1,7 +1,8 @@
-import type { Nodes, SupportedNetwork } from "./Nodes";
+import type { Nodes} from "./Nodes";
 import type { Html } from "./Html";
 import type { CommandRunner } from "./CommandRunner";
 import type { Storage } from "./Storage";
+import { SupportedNetwork } from "./LazyTevm.js";
 
 /**
  * Manages event listeners for the application.
@@ -16,7 +17,7 @@ export class EventListeners {
      * @param {CommandRunner} runner - The CommandRunner instance for executing commands.
      */
     constructor(
-        private readonly getTevmNodes: () => Promise<Nodes>,
+        private readonly nodes: Nodes,
         private readonly storage: Storage,
         private readonly html: Html,
         private readonly runner: CommandRunner,
@@ -28,19 +29,18 @@ export class EventListeners {
      * help icon clicks, command execution, history selection, and output copying.
      */
     public readonly addEventListeners = () => {
-        const { getTevmNodes, storage, html, runner } = this
+        const { nodes, storage, html, runner } = this
 
         /**
          * Event listener for network selection.
          * Creates a new tevm node and updates the UI when a network is selected.
          */
         html.networkSelect.addEventListener('change', async function onNetworkSelect() {
-            const nodes = await getTevmNodes()
             const newNetwork = html.networkSelect.value as SupportedNetwork;
             nodes.network = newNetwork as SupportedNetwork;
-            const url = storage.getStoredUrl(newNetwork);
+            const url = await storage.getStoredUrl(newNetwork);
             html.rpcUrlDiv.value = url;
-            const node = await nodes[newNetwork].node;
+            const node = (await nodes[newNetwork]()).node;
 
             if (html.networkSelect.value) {
                 html.networkInfo.style.display = 'table';
@@ -61,15 +61,15 @@ export class EventListeners {
          * Creates a new tevm node when the RPC URL is changed.
          */
         html.rpcUrlDiv.addEventListener('blur', async function onRpcUrlChange() {
-            const nodes = await getTevmNodes()
             const { Nodes } = await import('./Nodes.js')
             const newUrl = html.rpcUrlDiv.value;
             const currentNetwork = nodes.network;
             try {
-                const node = await Nodes.createTevmNode(newUrl, nodes[currentNetwork].common);
+                const node = await Nodes.createTevmNode(newUrl, (await nodes[currentNetwork]()).common);
                 // If tevm node creation is successful, update the stored URL and reinitialize the tevm node
                 storage.setStoredUrl(currentNetwork, newUrl);
-                nodes[currentNetwork].node = node;
+                // TODO we should add a setter method to do this instead of directly mutating node
+                (await nodes[currentNetwork]()).node = node;
                 const [chainId, block] = await Promise.all([node.getVm().then(vm => vm.common.id), node.getVm().then(vm => vm.blockchain.getCanonicalHeadBlock())])
                 html.chainIdCell.textContent = chainId.toLocaleString();
                 html.baseFeeCell.textContent = block.header.baseFeePerGas?.toLocaleString() ?? '';
@@ -77,7 +77,7 @@ export class EventListeners {
                 html.forkBlockCell.textContent = block.header.number.toLocaleString();
             } catch (error) {
                 // Revert to the previously stored URL
-                html.rpcUrlDiv.value = storage.getStoredUrl(currentNetwork);
+                html.rpcUrlDiv.value = await storage.getStoredUrl(currentNetwork);
             }
         });
 
@@ -86,9 +86,8 @@ export class EventListeners {
          * Runs the 'cast --help' command when the help icon is clicked.
          */
         html.helpIcon.addEventListener('click', async function onHelpIconClick() {
-            const nodes = await getTevmNodes()
             const currentNetwork = nodes.network;
-            const node = nodes[currentNetwork].node;
+            const node = (await nodes[currentNetwork]()).node;
             runner.runCommand(node, 'cast --help');
         });
 
@@ -97,7 +96,6 @@ export class EventListeners {
          * Executes the entered command and updates command history.
          */
         html.runButton.addEventListener('click', async function onRunButtonClick() {
-            const nodes = await getTevmNodes()
             let command = html.commandInput.value.trim()
             if (command.startsWith('Cast')) {
                 command = command.replace('Cast', 'cast')
@@ -106,7 +104,7 @@ export class EventListeners {
                 command = `cast ${command}`
             }
             const currentNetwork = nodes.network;
-            const node = await nodes[currentNetwork].node;
+            const node = (await nodes[currentNetwork]()).node;
 
             let history = storage.getStoredHistory();
             const existingIndex = history.indexOf(command);

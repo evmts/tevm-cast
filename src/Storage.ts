@@ -1,13 +1,43 @@
-import {
-  arbitrumNova, aurora, auroraTestnet,
-  avalanche, bearNetworkChainMainnet, berachainTestnet,
-  blast, blastSepolia, boba, bsc, celo, cronos, cronosTestnet,
-  fantom, filecoin, gnosis, harmonyOne, kava, kavaTestnet,
-  linea, lineaTestnet, lyra, manta, mantle, metis, mode,
-  moonbeam, moonriver, opBNB, polygonMumbai, polygonZkEvm, polygonZkEvmTestnet, redstone,
-  scroll, tevmDefault, zoraTestnet
-} from "tevm/common";
-import { SupportedNetwork } from "./Nodes";
+import type { SupportedNetwork } from './LazyTevm';
+
+const commonMap = {
+  arbitrumNova: () => import('tevm/common').then(module => module.arbitrumNova),
+  aurora: () => import('tevm/common').then(module => module.aurora),
+  auroraTestnet: () => import('tevm/common').then(module => module.auroraTestnet),
+  avalanche: () => import('tevm/common').then(module => module.avalanche),
+  bearNetworkChainMainnet: () => import('tevm/common').then(module => module.bearNetworkChainMainnet),
+  berachainTestnet: () => import('tevm/common').then(module => module.berachainTestnet),
+  blast: () => import('tevm/common').then(module => module.blast),
+  blastSepolia: () => import('tevm/common').then(module => module.blastSepolia),
+  boba: () => import('tevm/common').then(module => module.boba),
+  bsc: () => import('tevm/common').then(module => module.bsc),
+  celo: () => import('tevm/common').then(module => module.celo),
+  cronos: () => import('tevm/common').then(module => module.cronos),
+  cronosTestnet: () => import('tevm/common').then(module => module.cronosTestnet),
+  fantom: () => import('tevm/common').then(module => module.fantom),
+  filecoin: () => import('tevm/common').then(module => module.filecoin),
+  gnosis: () => import('tevm/common').then(module => module.gnosis),
+  harmonyOne: () => import('tevm/common').then(module => module.harmonyOne),
+  kava: () => import('tevm/common').then(module => module.kava),
+  kavaTestnet: () => import('tevm/common').then(module => module.kavaTestnet),
+  linea: () => import('tevm/common').then(module => module.linea),
+  lineaTestnet: () => import('tevm/common').then(module => module.lineaTestnet),
+  lyra: () => import('tevm/common').then(module => module.lyra),
+  manta: () => import('tevm/common').then(module => module.manta),
+  mantle: () => import('tevm/common').then(module => module.mantle),
+  metis: () => import('tevm/common').then(module => module.metis),
+  mode: () => import('tevm/common').then(module => module.mode),
+  moonbeam: () => import('tevm/common').then(module => module.moonbeam),
+  moonriver: () => import('tevm/common').then(module => module.moonriver),
+  opBNB: () => import('tevm/common').then(module => module.opBNB),
+  polygonMumbai: () => import('tevm/common').then(module => module.polygonMumbai),
+  polygonZkEvm: () => import('tevm/common').then(module => module.polygonZkEvm),
+  polygonZkEvmTestnet: () => import('tevm/common').then(module => module.polygonZkEvmTestnet),
+  redstone: () => import('tevm/common').then(module => module.redstone),
+  scroll: () => import('tevm/common').then(module => module.scroll),
+  tevmDefault: () => import('tevm/common').then(module => module.tevmDefault),
+  zoraTestnet: () => import('tevm/common').then(module => module.zoraTestnet),
+};
 
 const alchemyApiKey = 'beaEwjczm1iCOAcSco_F8QbtqnwnginU';
 
@@ -25,47 +55,6 @@ const alchemyUrls = {
   baseSepolia: `https://base-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
   zksync: `https://zksync-era.g.alchemy.com/v2/${alchemyApiKey}`,
   zksyncSepolia: `https://zksync-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
-};
-
-const defaultUrls: Record<SupportedNetwork, string> = {
-  ...alchemyUrls,
-  redstone: redstone.rpcUrls.default.http[0],
-  arbitrumNova: arbitrumNova.rpcUrls.default.http[0],
-  aurora: aurora.rpcUrls.default.http[0],
-  auroraTestnet: auroraTestnet.rpcUrls.default.http[0],
-  avalanche: avalanche.rpcUrls.default.http[0],
-  bearNetworkChainMainnet: bearNetworkChainMainnet.rpcUrls.default.http[0],
-  berachain: berachainTestnet.rpcUrls.default.http[0],
-  berachainTestnet: berachainTestnet.rpcUrls.default.http[0],
-  blast: blast.rpcUrls.default.http[0],
-  blastSepolia: blastSepolia.rpcUrls.default.http[0],
-  boba: boba.rpcUrls.default.http[0],
-  bsc: bsc.rpcUrls.default.http[0],
-  celo: celo.rpcUrls.default.http[0],
-  cronos: cronos.rpcUrls.default.http[0],
-  cronosTestnet: cronosTestnet.rpcUrls.default.http[0],
-  fantom: fantom.rpcUrls.default.http[0],
-  filecoin: filecoin.rpcUrls.default.http[0],
-  gnosis: gnosis.rpcUrls.default.http[0],
-  harmonyOne: harmonyOne.rpcUrls.default.http[0],
-  kava: kava.rpcUrls.default.http[0],
-  kavaTestnet: kavaTestnet.rpcUrls.default.http[0],
-  linea: linea.rpcUrls.default.http[0],
-  lineaTestnet: lineaTestnet.rpcUrls.default.http[0],
-  lyra: lyra.rpcUrls.default.http[0],
-  manta: manta.rpcUrls.default.http[0],
-  mantle: mantle.rpcUrls.default.http[0],
-  metis: metis.rpcUrls.default.http[0],
-  mode: mode.rpcUrls.default.http[0],
-  moonbeam: moonbeam.rpcUrls.default.http[0],
-  moonriver: moonriver.rpcUrls.default.http[0],
-  opBNB: opBNB.rpcUrls.default.http[0],
-  polygonMumbai: polygonMumbai.rpcUrls.default.http[0],
-  polygonZkEvm: polygonZkEvm.rpcUrls.default.http[0],
-  polygonZkEvmTestnet: polygonZkEvmTestnet.rpcUrls.default.http[0],
-  scroll: scroll.rpcUrls.default.http[0],
-  tevmDefault: tevmDefault.rpcUrls.default.http[0],
-  zoraTestnet: zoraTestnet.rpcUrls.default.http[0],
 };
 
 export class Storage {
@@ -88,14 +77,23 @@ export class Storage {
     }
   }
 
-  public getStoredUrl(network: SupportedNetwork): string {
+  public async getStoredUrl(network: SupportedNetwork): Promise<string> {
     const storedUrl = localStorage.getItem(`rpcUrl_${network}`);
     if (storedUrl) return storedUrl;
-    
-    return defaultUrls[network] || ''; // Returns an empty string if no default URL is found
+    const out = alchemyUrls[network] ?? await this.getUrlFromCommon(network);
+    return out ?? '';
   }
 
-  setStoredUrl(network: string, url: string) {
+  private async getUrlFromCommon(network: SupportedNetwork): Promise<string> {
+    const commonLoader = commonMap[network];
+    if (commonLoader) {
+      const common = await commonLoader();
+      return common.defaultRpcUrls[0] ?? '';
+    }
+    return '';
+  }
+
+  async setStoredUrl(network: string, url: string): Promise<void> {
     localStorage.setItem(`rpcUrl_${network}`, url);
   }
 

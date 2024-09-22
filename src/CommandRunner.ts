@@ -1,13 +1,14 @@
 import { type Hex, type TevmNode, encodeFunctionData, decodeFunctionResult } from "tevm";
 import { hexToBigInt, hexToBytes, keccak256, numberToHex } from "viem";
 import { HelpText } from "./HelpText.js";
-import { createAddress, create2ContractAddress, createContractAddress } from "tevm/address";
 import type { Html } from "./Html";
 import { CallHandler } from "./CallHandler";
 import { SendHandler } from "./SendHandler.js";
 import { FetchFunctionSignature } from "./FetchFunctionSig.js";
 import { EthjsAddress } from "tevm/utils";
 import { EthGetLogsJsonRpcRequest, ethGetLogsProcedure, gasPriceProcedure } from 'tevm/procedures';
+import { CLIParser } from "./CliParser.js";
+import { LazyTevm } from "./LazyTevm.js";
 
 function stringifyWithBigInt(obj: any): string {
   return JSON.stringify(obj, (key, value) =>
@@ -19,16 +20,6 @@ function stringifyWithBigInt(obj: any): string {
 
 export class CommandRunner {
   constructor(private readonly html: Html) { }
-
-  private static parseBlockTag(tag: string): Hex | bigint | 'latest' {
-    if (tag.startsWith('0x')) {
-      return tag as Hex;
-    }
-    if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(tag[0])) {
-      return BigInt(tag);
-    }
-    return (tag ?? 'latest') as 'latest';
-  }
 
   /**
    * Giant switch statement that runs every command
@@ -174,7 +165,7 @@ export class CommandRunner {
         case command.startsWith('cast age '): {
           this.html.renderCommandLoading();
           const parts = command.split(' ');
-          const blockTag = parts[2] ? CommandRunner.parseBlockTag(parts[2]) : 'latest';
+          const blockTag = parts[2] ? CLIParser.parseBlockTag(parts[2]) : 'latest';
           try {
             const block = await node.getVm().then(vm => vm.blockchain.getBlockByTag(blockTag));
             if (!block) {
@@ -205,7 +196,7 @@ export class CommandRunner {
         case command.startsWith('cast basefee '): {
           this.html.renderCommandLoading();
           const parts = command.split(' ');
-          const blockTag = parts[2] ? CommandRunner.parseBlockTag(parts[2]) : 'latest';
+          const blockTag = parts[2] ? CLIParser.parseBlockTag(parts[2]) : 'latest';
           try {
             const block = await node.getVm().then(vm => vm.blockchain.getBlockByTag(blockTag));
             if (!block) {
@@ -291,15 +282,15 @@ export class CommandRunner {
             let computedAddress: EthjsAddress;
             if (nonce !== undefined) {
               // Compute address with provided nonce
-              computedAddress = createContractAddress(
-                createAddress(deployer),
+              computedAddress = await LazyTevm.createContractAddress(
+                await LazyTevm.createAddress(deployer),
                 nonce
               );
             } else {
               // Compute address without nonce (use current nonce)
-              const currentNonce = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(deployer))).then(account => account?.nonce ?? 0n);
-              computedAddress = createContractAddress(
-                createAddress(deployer),
+              const currentNonce = await node.getVm().then(async vm => vm.stateManager.getAccount(await LazyTevm.createAddress(deployer))).then(account => account?.nonce ?? 0n);
+              computedAddress = await LazyTevm.createContractAddress(
+                await LazyTevm.createAddress(deployer),
                 currentNonce
               );
             }
@@ -329,8 +320,8 @@ export class CommandRunner {
           const initCode = parts[4] as Hex;
 
           try {
-            const computedAddress = create2ContractAddress(
-              createAddress(deployer),
+            const computedAddress = await LazyTevm.create2Address(
+              await LazyTevm.createAddress(deployer),
               salt,
               initCode
             );
@@ -384,7 +375,7 @@ export class CommandRunner {
             return;
           }
           try {
-            const balance = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(balanceAddress))).then(account => account?.balance ?? 0n);
+            const balance = await node.getVm().then(async vm => vm.stateManager.getAccount(await LazyTevm.createAddress(balanceAddress))).then(account => account?.balance ?? 0n);
             this.html.renderCommandResult(balance.toString());
           } catch (error) {
             console.error(error);
@@ -433,7 +424,7 @@ export class CommandRunner {
               params: [{
                 fromBlock: fromBlock ?? forkedBlock.header.number,
                 toBlock: toBlock || 'latest',
-                address: address ? createAddress(address).toString() : undefined,
+                address: address ? (await LazyTevm.createAddress(address)).toString() : undefined,
                 topics: topics?.length ? [topics] : undefined,
               }],
             };
@@ -464,7 +455,7 @@ export class CommandRunner {
             return;
           }
           try {
-            const nonce = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(address))).then(account => account?.nonce ?? 0n);
+            const nonce = await node.getVm().then(async vm => vm.stateManager.getAccount(await LazyTevm.createAddress(address))).then(account => account?.nonce ?? 0n);
             this.html.renderCommandResult(nonce.toString());
           } catch (error) {
             console.error(error);
@@ -569,7 +560,7 @@ export class CommandRunner {
             return;
           }
           try {
-            const balance = await node.getVm().then(vm => vm.stateManager.getAccount(createAddress(balanceAddress))).then(account => account?.balance ?? 0n);
+            const balance = await node.getVm().then(async vm => vm.stateManager.getAccount(await LazyTevm.createAddress(balanceAddress))).then(account => account?.balance ?? 0n);
             this.html.renderCommandResult(balance.toString());
           } catch (error) {
             console.error(error);
@@ -604,7 +595,7 @@ export class CommandRunner {
         case command.startsWith('cast block '):
         case command.startsWith('cast bl '): {
           this.html.renderCommandLoading();
-          const blockTag = CommandRunner.parseBlockTag(command.trim().split(' ').at(-1) as string);
+          const blockTag = CLIParser.parseBlockTag(command.trim().split(' ').at(-1) as string);
           const blockData = await node.getVm().then(vm => vm.blockchain.getBlockByTag(blockTag)).then(block => block.toJSON());
           this.html.renderCommandResult(JSON.stringify(blockData, null, 2));
           return;
@@ -661,7 +652,7 @@ export class CommandRunner {
             throw new Error('Usage: cast code <ADDRESS>');
           }
           const address = codeParts[2] as `0x${string}`;
-          const code = await node.getVm().then(vm => vm.stateManager.getContractCode(createAddress(address)));
+          const code = await node.getVm().then(async vm => vm.stateManager.getContractCode(await LazyTevm.createAddress(address)));
           this.html.renderCommandResult(`${code}`);
           return;
 
@@ -700,7 +691,7 @@ export class CommandRunner {
           } else {
             slot = numberToHex(hexToBigInt(slot), { size: 32 })
           }
-          const storageValue = await node.getVm().then(vm => vm.stateManager.getContractStorage(createAddress(storageAddress), hexToBytes(slot)));
+          const storageValue = await node.getVm().then(async vm => vm.stateManager.getContractStorage(await LazyTevm.createAddress(storageAddress), hexToBytes(slot)));
           this.html.renderCommandResult(`${storageValue}`);
           return;
 

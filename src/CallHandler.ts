@@ -6,20 +6,7 @@ import { createAddress } from "tevm/address";
 import { InternalError } from "tevm/errors";
 import type { EvmRunCallOpts } from "tevm/evm";
 import type { DebugTraceCallResult } from "tevm/actions";
-
-// TODO this is copy pasta from CommandRunner.ts
-// We should create a new class called CLIParser that is in charge of parsing the CLI
-export class CLIParser {
-  public static parseBlockTag(tag: string): Hex | bigint | 'latest' {
-    if (tag.startsWith('0x')) {
-      return tag as Hex;
-    }
-    if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(tag[0])) {
-      return BigInt(tag);
-    }
-    return (tag ?? 'latest') as 'latest';
-  }
-}
+import { CLIParser } from "./CliParser";
 
 export class CallHandler {
   public static readonly handleCallCommand = async (node: TevmNode, command: string) => {

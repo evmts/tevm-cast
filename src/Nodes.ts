@@ -1,620 +1,92 @@
-import {
-  arbitrum as arbitrumCommon,
-  arbitrumNova as arbitrumNovaCommon,
-  arbitrumSepolia as arbitrumSepoliaCommon,
-  aurora as auroraCommon,
-  auroraTestnet as auroraTestnetCommon,
-  avalanche as avalanceCommon,
-  base as baseCommon,
-  baseSepolia as baseSepoliaCommon,
-  bearNetworkChainMainnet as bearNetworkChainMainnetCommon,
-  berachainTestnet as berachainTestnetCommon,
-  blast as blastCommon,
-  blastSepolia as blastSepoliaCommon,
-  boba as bobaCommon,
-  bsc as bscCommon,
-  celo as celoCommon,
-  cronos as cronosCommon,
-  cronosTestnet as cronosTestnetCommon,
-  fantom as fantomCommon,
-  filecoin as filecoinCommon,
-  gnosis as gnosisCommon,
-  harmonyOne as harmonyOneCommon,
-  holesky as holeskyCommon,
-  kava as kavaCommon,
-  kavaTestnet as kavaTestnetCommon,
-  linea as lineaCommon,
-  lineaTestnet as lineaTestnetCommon,
-  lyra as lyraCommon,
-  mainnet as mainnetCommon,
-  manta as manaCommon,
-  mantle as mantleCommon,
-  metis as metisCommon,
-  mode as modeCommon,
-  moonbeam as moonbeamCommon,
-  moonriver as moonriverCommon,
-  opBNB as opBNBCommon,
-  optimism as optimismCommon,
-  optimismSepolia as optimismSeplia,
-  polygon as polygonCommon,
-  polygonMumbai as polygonMumbaiCommon,
-  polygonZkEvm as polygonZkEvmCommon,
-  polygonZkEvmTestnet as polygonZkEvmTestnetCommon,
-  redstone as redstoneCommon,
-  scroll as scrollCommon,
-  sepolia as sepoliaCommon,
-  tevmDefault as tevmDefault,
-  zksync as zksyncCommon,
-  zksyncSepoliaTestnet as zksyncSepoliaTestnetCommon,
-  zora as zoraCommon,
-  zoraSepolia as zoraSepoliaCommon,
-  zoraTestnet as zoraTestnetCommon,
-} from "tevm/common";
-import { Storage } from "./Storage";
-import { createTevmNode, http, TevmNode } from 'tevm'
+import type { Storage } from "./Storage";
+import type { TevmNode } from 'tevm'
 import type { Common } from 'tevm/common'
+import { LazyTevm, type SupportedNetwork } from "./LazyTevm";
 
-export type SupportedNetwork =
-  | "arbitrum"
-  | "arbitrumNova"
-  | "arbitrumSepolia"
-  | "aurora"
-  | "auroraTestnet"
-  | "avalanche"
-  | "base"
-  | "baseSepolia"
-  | "bearNetworkChainMainnet"
-  | "berachain"
-  | "berachainTestnet"
-  | "blast"
-  | "blastSepolia"
-  | "boba"
-  | "bsc"
-  | "celo"
-  | "cronos"
-  | "cronosTestnet"
-  | "fantom"
-  | "filecoin"
-  | "gnosis"
-  | "harmonyOne"
-  | "kava"
-  | "kavaTestnet"
-  | "linea"
-  | "lineaTestnet"
-  | "lyra"
-  | "mainnet"
-  | "manta"
-  | "mantle"
-  | "metis"
-  | "mode"
-  | "moonbeam"
-  | "moonriver"
-  | "opBNB"
-  | "optimism"
-  | "optimismSepolia"
-  | "polygon"
-  | "polygonMumbai"
-  | "polygonZkEvm"
-  | "polygonZkEvmTestnet"
-  | "redstone"
-  | "scroll"
-  | "sepolia"
-  | "tevmDefault"
-  | "zksync"
-  | "zksyncSepolia"
-  | "zora"
-  | "zoraSepolia"
-  | "zoraTestnet";
-
-/**
- * Tevm node eagerly instantiates tevm nodes for all supported networks
- * It lazy loads the tevm library for optimal code splitting
- */
-export class Nodes implements Record<SupportedNetwork, { common: Common; node: TevmNode }>{
-  // We choose to lazy load tevm to optimize first load
-  public static createTevmNode = (rpcUrl: string, common: Common) => {
-    return createTevmNode({
+export class Nodes implements Record<SupportedNetwork, () => Promise<{ common: Common; node: TevmNode }>>{
+  public static createTevmNode = async (rpcUrl: string, common: Common) => {
+    return LazyTevm.createTevmNode({
       common,
       fork: {
-        transport: http(rpcUrl)({})
+        transport: (await LazyTevm.http(rpcUrl))({})
       }
     })
   }
 
   private storage: Storage;
   public network: SupportedNetwork;
-  private _tevmDefault: { common: Common; node: TevmNode } | undefined;
-
-  public get tevmDefault() {
-    if (!this._tevmDefault) {
-      this._tevmDefault = { common: tevmDefault, node: createTevmNode({ common: tevmDefault })}
-    }
-    return this._tevmDefault;
-  }
-
-
-  private _arbitrum: { common: Common; node: TevmNode };
-  private _arbitrumNova: { common: Common; node: TevmNode } | undefined;
-  private _arbitrumSepolia: { common: Common; node: TevmNode } | undefined;
-  private _aurora: { common: Common; node: TevmNode } | undefined;
-  private _auroraTestnet: { common: Common; node: TevmNode } | undefined;
-  private _avalanche: { common: Common; node: TevmNode } | undefined;
-  private _base: { common: Common; node: TevmNode };
-  private _baseSepolia: { common: Common; node: TevmNode } | undefined;
-  private _bearNetworkChainMainnet: { common: Common; node: TevmNode } | undefined;
-  private _berachain: { common: Common; node: TevmNode } | undefined;
-  private _berachainTestnet: { common: Common; node: TevmNode } | undefined;
-  private _blast: { common: Common; node: TevmNode } | undefined;
-  private _blastSepolia: { common: Common; node: TevmNode } | undefined;
-  private _boba: { common: Common; node: TevmNode } | undefined;
-  private _bsc: { common: Common; node: TevmNode } | undefined;
-  private _celo: { common: Common; node: TevmNode } | undefined;
-  private _cronos: { common: Common; node: TevmNode } | undefined;
-  private _cronosTestnet: { common: Common; node: TevmNode } | undefined;
-  private _fantom: { common: Common; node: TevmNode } | undefined;
-  private _filecoin: { common: Common; node: TevmNode } | undefined;
-  private _gnosis: { common: Common; node: TevmNode } | undefined;
-  private _harmonyOne: { common: Common; node: TevmNode } | undefined;
-  private _kava: { common: Common; node: TevmNode } | undefined;
-  private _kavaTestnet: { common: Common; node: TevmNode } | undefined;
-  private _linea: { common: Common; node: TevmNode } | undefined;
-  private _lineaTestnet: { common: Common; node: TevmNode } | undefined;
-  private _lyra: { common: Common; node: TevmNode } | undefined;
-  private _mainnet: { common: Common; node: TevmNode };
-  private _manta: { common: Common; node: TevmNode } | undefined;
-  private _mantle: { common: Common; node: TevmNode } | undefined;
-  private _metis: { common: Common; node: TevmNode } | undefined;
-  private _mode: { common: Common; node: TevmNode } | undefined;
-  private _moonbeam: { common: Common; node: TevmNode } | undefined;
-  private _moonriver: { common: Common; node: TevmNode } | undefined;
-  private _opBNB: { common: Common; node: TevmNode } | undefined;
-  private _optimism: { common: Common; node: TevmNode };
-  private _optimismSepolia: { common: Common; node: TevmNode } | undefined;
-  private _polygon: { common: Common; node: TevmNode };
-  private _polygonMumbai: { common: Common; node: TevmNode } | undefined;
-  private _polygonZkEvm: { common: Common; node: TevmNode } | undefined;
-  private _polygonZkEvmTestnet: { common: Common; node: TevmNode } | undefined;
-  private _redstone: { common: Common; node: TevmNode } | undefined;
-  private _scroll: { common: Common; node: TevmNode } | undefined;
-  private _sepolia: { common: Common; node: TevmNode } | undefined;
-  private _zksync: { common: Common; node: TevmNode } | undefined;
-  private _zksyncSepolia: { common: Common; node: TevmNode } | undefined;
-  private _zora: { common: Common; node: TevmNode } | undefined;
-  private _zoraSepolia: { common: Common; node: TevmNode } | undefined;
-  private _zoraTestnet: { common: Common; node: TevmNode } | undefined;
-  public newChain: { common: Common; node: TevmNode };
+  private nodes: Partial<Record<SupportedNetwork, { common: Common; node: TevmNode }>> = {};
 
   constructor(storage: Storage, network: SupportedNetwork = 'mainnet') {
     this.storage = storage;
     this.network = network;
-
-    // Optimistically create mainnet through polygon
-    this._mainnet = {
-      common: mainnetCommon,
-      node: Nodes.createTevmNode(storage.getStoredUrl('mainnet'), mainnetCommon),
-    };
-    this._base = {
-      common: baseCommon,
-      node: Nodes.createTevmNode(storage.getStoredUrl('base'), baseCommon),
-    };
-    this._optimism = {
-      common: optimismCommon,
-      node: Nodes.createTevmNode(storage.getStoredUrl('optimism'), optimismCommon),
-    };
-    this._arbitrum = {
-      common: arbitrumCommon,
-      node: Nodes.createTevmNode(storage.getStoredUrl('arbitrum'), arbitrumCommon),
-    };
-    this._polygon = {
-      common: polygonCommon,
-      node: Nodes.createTevmNode(storage.getStoredUrl('polygon'), polygonCommon),
-    };
-
-    this.newChain = {
-      common: tevmDefault,
-      node: createTevmNode({ common: tevmDefault }),
-    };
   }
 
-  public get arbitrum() { return this._arbitrum; }
-  public get arbitrumNova() {
-    if (!this._arbitrumNova) {
-      this._arbitrumNova = {
-        common: arbitrumNovaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('arbitrumNova'), arbitrumNovaCommon),
+  private async getNode(network: SupportedNetwork): Promise<{ common: Common; node: TevmNode }> {
+    if (!this.nodes[network]) {
+      const common = await LazyTevm.getCommon(network);
+      this.nodes[network] = {
+        common,
+        node: await Nodes.createTevmNode(await this.storage.getStoredUrl(network), common),
       };
     }
-    return this._arbitrumNova;
+    return this.nodes[network]!;
   }
-  public get arbitrumSepolia() {
-    if (!this._arbitrumSepolia) {
-      this._arbitrumSepolia = {
-        common: arbitrumSepoliaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('arbitrumSepolia'), arbitrumSepoliaCommon),
-      };
+
+  public async tevmDefault() {
+    if (!this.nodes.tevmDefault) {
+      const common = await LazyTevm.getCommon('tevmDefault');
+      this.nodes.tevmDefault = { common, node: await LazyTevm.createTevmNode({ common }) };
     }
-    return this._arbitrumSepolia;
+    return this.nodes.tevmDefault;
   }
-  public get aurora() {
-    if (!this._aurora) {
-      this._aurora = {
-        common: auroraCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('aurora'), auroraCommon),
-      };
-    }
-    return this._aurora;
-  }
-  public get auroraTestnet() {
-    if (!this._auroraTestnet) {
-      this._auroraTestnet = {
-        common: auroraTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('auroraTestnet'), auroraTestnetCommon),
-      };
-    }
-    return this._auroraTestnet;
-  }
-  public get avalanche() {
-    if (!this._avalanche) {
-      this._avalanche = {
-        common: avalanceCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('avalanche'), avalanceCommon),
-      };
-    }
-    return this._avalanche;
-  }
-  public get base() { return this._base; }
-  public get baseSepolia() {
-    if (!this._baseSepolia) {
-      this._baseSepolia = {
-        common: baseSepoliaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('baseSepolia'), baseSepoliaCommon),
-      };
-    }
-    return this._baseSepolia;
-  }
-  public get bearNetworkChainMainnet() {
-    if (!this._bearNetworkChainMainnet) {
-      this._bearNetworkChainMainnet = {
-        common: bearNetworkChainMainnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('bearNetworkChainMainnet'), bearNetworkChainMainnetCommon),
-      };
-    }
-    return this._bearNetworkChainMainnet;
-  }
-  public get berachain() {
-    if (!this._berachain) {
-      this._berachain = {
-        common: berachainTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('berachain'), berachainTestnetCommon),
-      };
-    }
-    return this._berachain;
-  }
-  public get berachainTestnet() {
-    if (!this._berachainTestnet) {
-      this._berachainTestnet = {
-        common: berachainTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('berachainTestnet'), berachainTestnetCommon),
-      };
-    }
-    return this._berachainTestnet;
-  }
-  public get blast() {
-    if (!this._blast) {
-      this._blast = {
-        common: blastCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('blast'), blastCommon),
-      };
-    }
-    return this._blast;
-  }
-  public get blastSepolia() {
-    if (!this._blastSepolia) {
-      this._blastSepolia = {
-        common: blastSepoliaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('blastSepolia'), blastSepoliaCommon),
-      };
-    }
-    return this._blastSepolia;
-  }
-  public get boba() {
-    if (!this._boba) {
-      this._boba = {
-        common: bobaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('boba'), bobaCommon),
-      };
-    }
-    return this._boba;
-  }
-  public get bsc() {
-    if (!this._bsc) {
-      this._bsc = {
-        common: bscCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('bsc'), bscCommon),
-      };
-    }
-    return this._bsc;
-  }
-  public get celo() {
-    if (!this._celo) {
-      this._celo = {
-        common: celoCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('celo'), celoCommon),
-      };
-    }
-    return this._celo;
-  }
-  public get cronos() {
-    if (!this._cronos) {
-      this._cronos = {
-        common: cronosCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('cronos'), cronosCommon),
-      };
-    }
-    return this._cronos;
-  }
-  public get cronosTestnet() {
-    if (!this._cronosTestnet) {
-      this._cronosTestnet = {
-        common: cronosTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('cronosTestnet'), cronosTestnetCommon),
-      };
-    }
-    return this._cronosTestnet;
-  }
-  public get fantom() {
-    if (!this._fantom) {
-      this._fantom = {
-        common: fantomCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('fantom'), fantomCommon),
-      };
-    }
-    return this._fantom;
-  }
-  public get filecoin() {
-    if (!this._filecoin) {
-      this._filecoin = {
-        common: filecoinCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('filecoin'), filecoinCommon),
-      };
-    }
-    return this._filecoin;
-  }
-  public get gnosis() {
-    if (!this._gnosis) {
-      this._gnosis = {
-        common: gnosisCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('gnosis'), gnosisCommon),
-      };
-    }
-    return this._gnosis;
-  }
-  public get harmonyOne() {
-    if (!this._harmonyOne) {
-      this._harmonyOne = {
-        common: harmonyOneCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('harmonyOne'), harmonyOneCommon),
-      };
-    }
-    return this._harmonyOne;
-  }
-  public get kava() {
-    if (!this._kava) {
-      this._kava = {
-        common: kavaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('kava'), kavaCommon),
-      };
-    }
-    return this._kava;
-  }
-  public get kavaTestnet() {
-    if (!this._kavaTestnet) {
-      this._kavaTestnet = {
-        common: kavaTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('kavaTestnet'), kavaTestnetCommon),
-      };
-    }
-    return this._kavaTestnet;
-  }
-  public get linea() {
-    if (!this._linea) {
-      this._linea = {
-        common: lineaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('linea'), lineaCommon),
-      };
-    }
-    return this._linea;
-  }
-  public get lineaTestnet() {
-    if (!this._lineaTestnet) {
-      this._lineaTestnet = {
-        common: lineaTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('lineaTestnet'), lineaTestnetCommon),
-      };
-    }
-    return this._lineaTestnet;
-  }
-  public get lyra() {
-    if (!this._lyra) {
-      this._lyra = {
-        common: lyraCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('lyra'), lyraCommon),
-      };
-    }
-    return this._lyra;
-  }
-  public get mainnet() { return this._mainnet; }
-  public get manta() {
-    if (!this._manta) {
-      this._manta = {
-        common: manaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('manta'), manaCommon),
-      };
-    }
-    return this._manta;
-  }
-  public get mantle() {
-    if (!this._mantle) {
-      this._mantle = {
-        common: mantleCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('mantle'), mantleCommon),
-      };
-    }
-    return this._mantle;
-  }
-  public get metis() {
-    if (!this._metis) {
-      this._metis = {
-        common: metisCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('metis'), metisCommon),
-      };
-    }
-    return this._metis;
-  }
-  public get mode() {
-    if (!this._mode) {
-      this._mode = {
-        common: modeCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('mode'), modeCommon),
-      };
-    }
-    return this._mode;
-  }
-  public get moonbeam() {
-    if (!this._moonbeam) {
-      this._moonbeam = {
-        common: moonbeamCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('moonbeam'), moonbeamCommon),
-      };
-    }
-    return this._moonbeam;
-  }
-  public get moonriver() {
-    if (!this._moonriver) {
-      this._moonriver = {
-        common: moonriverCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('moonriver'), moonriverCommon),
-      };
-    }
-    return this._moonriver;
-  }
-  public get opBNB() {
-    if (!this._opBNB) {
-      this._opBNB = {
-        common: opBNBCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('opBNB'), opBNBCommon),
-      };
-    }
-    return this._opBNB;
-  }
-  public get optimism() { return this._optimism; }
-  public get optimismSepolia() {
-    if (!this._optimismSepolia) {
-      this._optimismSepolia = {
-        common: optimismSeplia,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('optimismSepolia'), optimismSeplia),
-      };
-    }
-    return this._optimismSepolia;
-  }
-  public get polygon() { return this._polygon; }
-  public get polygonMumbai() {
-    if (!this._polygonMumbai) {
-      this._polygonMumbai = {
-        common: polygonMumbaiCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('polygonMumbai'), polygonMumbaiCommon),
-      };
-    }
-    return this._polygonMumbai;
-  }
-  public get polygonZkEvm() {
-    if (!this._polygonZkEvm) {
-      this._polygonZkEvm = {
-        common: polygonZkEvmCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('polygonZkEvm'), polygonZkEvmCommon),
-      };
-    }
-    return this._polygonZkEvm;
-  }
-  public get polygonZkEvmTestnet() {
-    if (!this._polygonZkEvmTestnet) {
-      this._polygonZkEvmTestnet = {
-        common: polygonZkEvmTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('polygonZkEvmTestnet'), polygonZkEvmTestnetCommon),
-      };
-    }
-    return this._polygonZkEvmTestnet;
-  }
-  public get redstone() {
-    if (!this._redstone) {
-      this._redstone = {
-        common: redstoneCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('redstone'), redstoneCommon),
-      };
-    }
-    return this._redstone;
-  }
-  public get scroll() {
-    if (!this._scroll) {
-      this._scroll = {
-        common: scrollCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('scroll'), scrollCommon),
-      };
-    }
-    return this._scroll;
-  }
-  public get sepolia() {
-    if (!this._sepolia) {
-      this._sepolia = {
-        common: sepoliaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('sepolia'), sepoliaCommon),
-      };
-    }
-    return this._sepolia;
-  }
-  public get zksync() {
-    if (!this._zksync) {
-      this._zksync = {
-        common: zksyncCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('zksync'), zksyncCommon),
-      };
-    }
-    return this._zksync;
-  }
-  public get zksyncSepolia() {
-    if (!this._zksyncSepolia) {
-      this._zksyncSepolia = {
-        common: zksyncSepoliaTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('zksyncSepolia'), zksyncSepoliaTestnetCommon),
-      };
-    }
-    return this._zksyncSepolia;
-  }
-  public get zora() {
-    if (!this._zora) {
-      this._zora = {
-        common: zoraCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('zora'), zoraCommon),
-      };
-    }
-    return this._zora;
-  }
-  public get zoraSepolia() {
-    if (!this._zoraSepolia) {
-      this._zoraSepolia = {
-        common: zoraSepoliaCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('zoraSepolia'), zoraSepoliaCommon),
-      };
-    }
-    return this._zoraSepolia;
-  }
-  public get zoraTestnet() {
-    if (!this._zoraTestnet) {
-      this._zoraTestnet = {
-        common: zoraTestnetCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('zoraTestnet'), zoraTestnetCommon),
-      };
-    }
-    return this._zoraTestnet;
-  }
+
+  public async arbitrum() { return this.getNode('arbitrum'); }
+  public async arbitrumNova() { return this.getNode('arbitrumNova'); }
+  public async arbitrumSepolia() { return this.getNode('arbitrumSepolia'); }
+  public async aurora() { return this.getNode('aurora'); }
+  public async auroraTestnet() { return this.getNode('auroraTestnet'); }
+  public async avalanche() { return this.getNode('avalanche'); }
+  public async base() { return this.getNode('base'); }
+  public async baseSepolia() { return this.getNode('baseSepolia'); }
+  public async bearNetworkChainMainnet() { return this.getNode('bearNetworkChainMainnet'); }
+  public async berachainTestnet() { return this.getNode('berachainTestnet'); }
+  public async blast() { return this.getNode('blast'); }
+  public async blastSepolia() { return this.getNode('blastSepolia'); }
+  public async boba() { return this.getNode('boba'); }
+  public async bsc() { return this.getNode('bsc'); }
+  public async celo() { return this.getNode('celo'); }
+  public async cronos() { return this.getNode('cronos'); }
+  public async cronosTestnet() { return this.getNode('cronosTestnet'); }
+  public async fantom() { return this.getNode('fantom'); }
+  public async filecoin() { return this.getNode('filecoin'); }
+  public async gnosis() { return this.getNode('gnosis'); }
+  public async harmonyOne() { return this.getNode('harmonyOne'); }
+  public async kava() { return this.getNode('kava'); }
+  public async kavaTestnet() { return this.getNode('kavaTestnet'); }
+  public async linea() { return this.getNode('linea'); }
+  public async lineaTestnet() { return this.getNode('lineaTestnet'); }
+  public async lyra() { return this.getNode('lyra'); }
+  public async mainnet() { return this.getNode('mainnet'); }
+  public async manta() { return this.getNode('manta'); }
+  public async mantle() { return this.getNode('mantle'); }
+  public async metis() { return this.getNode('metis'); }
+  public async mode() { return this.getNode('mode'); }
+  public async moonbeam() { return this.getNode('moonbeam'); }
+  public async moonriver() { return this.getNode('moonriver'); }
+  public async opBNB() { return this.getNode('opBNB'); }
+  public async optimism() { return this.getNode('optimism'); }
+  public async optimismSepolia() { return this.getNode('optimismSepolia'); }
+  public async polygon() { return this.getNode('polygon'); }
+  public async polygonMumbai() { return this.getNode('polygonMumbai'); }
+  public async polygonZkEvm() { return this.getNode('polygonZkEvm'); }
+  public async polygonZkEvmTestnet() { return this.getNode('polygonZkEvmTestnet'); }
+  public async redstone() { return this.getNode('redstone'); }
+  public async scroll() { return this.getNode('scroll'); }
+  public async sepolia() { return this.getNode('sepolia'); }
+  public async zksync() { return this.getNode('zksync'); }
+  public async zksyncSepolia() { return this.getNode('zksyncSepolia'); }
+  public async zora() { return this.getNode('zora'); }
+  public async zoraSepolia() { return this.getNode('zoraSepolia'); }
+  public async zoraTestnet() { return this.getNode('zoraTestnet'); }
 }
