@@ -40,7 +40,7 @@ export class EventListeners {
             nodes.network = newNetwork as SupportedNetwork;
             const url = storage.getStoredUrl(newNetwork);
             html.rpcUrlDiv.value = url;
-            const node = await nodes[newNetwork].lazyLoadedNode;
+            const node = await nodes[newNetwork].node;
 
             if (html.networkSelect.value) {
                 html.networkInfo.style.display = 'table';
@@ -66,10 +66,10 @@ export class EventListeners {
             const newUrl = html.rpcUrlDiv.value;
             const currentNetwork = nodes.network;
             try {
-                const node = await Nodes.lazyLoadedTevmNode(newUrl, nodes[currentNetwork].common);
+                const node = await Nodes.createTevmNode(newUrl, nodes[currentNetwork].common);
                 // If tevm node creation is successful, update the stored URL and reinitialize the tevm node
                 storage.setStoredUrl(currentNetwork, newUrl);
-                nodes[currentNetwork].lazyLoadedNode = Promise.resolve(node);
+                nodes[currentNetwork].node = node;
                 const [chainId, block] = await Promise.all([node.getVm().then(vm => vm.common.id), node.getVm().then(vm => vm.blockchain.getCanonicalHeadBlock())])
                 html.chainIdCell.textContent = chainId.toLocaleString();
                 html.baseFeeCell.textContent = block.header.baseFeePerGas?.toLocaleString() ?? '';
@@ -88,7 +88,7 @@ export class EventListeners {
         html.helpIcon.addEventListener('click', async function onHelpIconClick() {
             const nodes = await getTevmNodes()
             const currentNetwork = nodes.network;
-            const node = await nodes[currentNetwork].lazyLoadedNode;
+            const node = nodes[currentNetwork].node;
             runner.runCommand(node, 'cast --help');
         });
 
@@ -106,7 +106,7 @@ export class EventListeners {
                 command = `cast ${command}`
             }
             const currentNetwork = nodes.network;
-            const node = await nodes[currentNetwork].lazyLoadedNode;
+            const node = await nodes[currentNetwork].node;
 
             let history = storage.getStoredHistory();
             const existingIndex = history.indexOf(command);

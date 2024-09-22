@@ -51,7 +51,7 @@ import {
   zoraTestnet as zoraTestnetCommon,
 } from "tevm/common";
 import { Storage } from "./Storage";
-import { createTevmNode, http } from 'tevm'
+import { createTevmNode, http, TevmNode } from 'tevm'
 import type { Common } from 'tevm/common'
 
 export type SupportedNetwork =
@@ -77,7 +77,6 @@ export type SupportedNetwork =
   | "filecoin"
   | "gnosis"
   | "harmonyOne"
-  | "holesky"
   | "kava"
   | "kavaTestnet"
   | "linea"
@@ -111,9 +110,9 @@ export type SupportedNetwork =
  * Tevm node eagerly instantiates tevm nodes for all supported networks
  * It lazy loads the tevm library for optimal code splitting
  */
-export class Nodes {
+export class Nodes implements Record<SupportedNetwork, { common: Common; node: TevmNode }>{
   // We choose to lazy load tevm to optimize first load
-  public static createTevmNode = async (rpcUrl: string, common: Common) => {
+  public static createTevmNode = (rpcUrl: string, common: Common) => {
     return createTevmNode({
       common,
       fork: {
@@ -124,58 +123,66 @@ export class Nodes {
 
   private storage: Storage;
   public network: SupportedNetwork;
+  private _tevmDefault: { common: Common; node: TevmNode } | undefined;
 
-  private _arbitrum: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> };
-  private _arbitrumNova: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _arbitrumSepolia: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _aurora: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _auroraTestnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _avalanche: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _base: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> };
-  private _baseSepolia: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _bearNetworkChainMainnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _berachain: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _berachainTestnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _blast: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _blastSepolia: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _boba: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _bsc: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _celo: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _cronos: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _cronosTestnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _fantom: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _filecoin: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _gnosis: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _harmonyOne: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _holesky: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _kava: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _kavaTestnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _linea: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _lineaTestnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _lyra: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _mainnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> };
-  private _manta: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _mantle: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _metis: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _mode: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _moonbeam: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _moonriver: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _opBNB: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _optimism: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> };
-  private _optimismSepolia: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _polygon: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> };
-  private _polygonMumbai: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _polygonZkEvm: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _polygonZkEvmTestnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _redstone: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _scroll: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _sepolia: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _zksync: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _zksyncSepolia: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _zora: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _zoraSepolia: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  private _zoraTestnet: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> } | undefined;
-  public newChain: { common: Common; node: Promise<ReturnType<typeof createTevmNode>> };
+  public get tevmDefault() {
+    if (!this._tevmDefault) {
+      this._tevmDefault = { common: tevmDefault, node: createTevmNode({ common: tevmDefault })}
+    }
+    return this._tevmDefault;
+  }
+
+
+  private _arbitrum: { common: Common; node: TevmNode };
+  private _arbitrumNova: { common: Common; node: TevmNode } | undefined;
+  private _arbitrumSepolia: { common: Common; node: TevmNode } | undefined;
+  private _aurora: { common: Common; node: TevmNode } | undefined;
+  private _auroraTestnet: { common: Common; node: TevmNode } | undefined;
+  private _avalanche: { common: Common; node: TevmNode } | undefined;
+  private _base: { common: Common; node: TevmNode };
+  private _baseSepolia: { common: Common; node: TevmNode } | undefined;
+  private _bearNetworkChainMainnet: { common: Common; node: TevmNode } | undefined;
+  private _berachain: { common: Common; node: TevmNode } | undefined;
+  private _berachainTestnet: { common: Common; node: TevmNode } | undefined;
+  private _blast: { common: Common; node: TevmNode } | undefined;
+  private _blastSepolia: { common: Common; node: TevmNode } | undefined;
+  private _boba: { common: Common; node: TevmNode } | undefined;
+  private _bsc: { common: Common; node: TevmNode } | undefined;
+  private _celo: { common: Common; node: TevmNode } | undefined;
+  private _cronos: { common: Common; node: TevmNode } | undefined;
+  private _cronosTestnet: { common: Common; node: TevmNode } | undefined;
+  private _fantom: { common: Common; node: TevmNode } | undefined;
+  private _filecoin: { common: Common; node: TevmNode } | undefined;
+  private _gnosis: { common: Common; node: TevmNode } | undefined;
+  private _harmonyOne: { common: Common; node: TevmNode } | undefined;
+  private _kava: { common: Common; node: TevmNode } | undefined;
+  private _kavaTestnet: { common: Common; node: TevmNode } | undefined;
+  private _linea: { common: Common; node: TevmNode } | undefined;
+  private _lineaTestnet: { common: Common; node: TevmNode } | undefined;
+  private _lyra: { common: Common; node: TevmNode } | undefined;
+  private _mainnet: { common: Common; node: TevmNode };
+  private _manta: { common: Common; node: TevmNode } | undefined;
+  private _mantle: { common: Common; node: TevmNode } | undefined;
+  private _metis: { common: Common; node: TevmNode } | undefined;
+  private _mode: { common: Common; node: TevmNode } | undefined;
+  private _moonbeam: { common: Common; node: TevmNode } | undefined;
+  private _moonriver: { common: Common; node: TevmNode } | undefined;
+  private _opBNB: { common: Common; node: TevmNode } | undefined;
+  private _optimism: { common: Common; node: TevmNode };
+  private _optimismSepolia: { common: Common; node: TevmNode } | undefined;
+  private _polygon: { common: Common; node: TevmNode };
+  private _polygonMumbai: { common: Common; node: TevmNode } | undefined;
+  private _polygonZkEvm: { common: Common; node: TevmNode } | undefined;
+  private _polygonZkEvmTestnet: { common: Common; node: TevmNode } | undefined;
+  private _redstone: { common: Common; node: TevmNode } | undefined;
+  private _scroll: { common: Common; node: TevmNode } | undefined;
+  private _sepolia: { common: Common; node: TevmNode } | undefined;
+  private _zksync: { common: Common; node: TevmNode } | undefined;
+  private _zksyncSepolia: { common: Common; node: TevmNode } | undefined;
+  private _zora: { common: Common; node: TevmNode } | undefined;
+  private _zoraSepolia: { common: Common; node: TevmNode } | undefined;
+  private _zoraTestnet: { common: Common; node: TevmNode } | undefined;
+  public newChain: { common: Common; node: TevmNode };
 
   constructor(storage: Storage, network: SupportedNetwork = 'mainnet') {
     this.storage = storage;
@@ -205,7 +212,7 @@ export class Nodes {
 
     this.newChain = {
       common: tevmDefault,
-      node: Promise.resolve(createTevmNode({ common: tevmDefault })),
+      node: createTevmNode({ common: tevmDefault }),
     };
   }
 
@@ -390,15 +397,6 @@ export class Nodes {
       };
     }
     return this._harmonyOne;
-  }
-  public get holesky() {
-    if (!this._holesky) {
-      this._holesky = {
-        common: holeskyCommon,
-        node: Nodes.createTevmNode(this.storage.getStoredUrl('holesky'), holeskyCommon),
-      };
-    }
-    return this._holesky;
   }
   public get kava() {
     if (!this._kava) {

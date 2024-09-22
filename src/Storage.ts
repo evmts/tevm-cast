@@ -2,7 +2,7 @@ import {
   arbitrumNova, aurora, auroraTestnet,
   avalanche, bearNetworkChainMainnet, berachainTestnet,
   blast, blastSepolia, boba, bsc, celo, cronos, cronosTestnet,
-  fantom, filecoin, gnosis, harmonyOne, holesky, kava, kavaTestnet,
+  fantom, filecoin, gnosis, harmonyOne, kava, kavaTestnet,
   linea, lineaTestnet, lyra, manta, mantle, metis, mode,
   moonbeam, moonriver, opBNB, polygonMumbai, polygonZkEvm, polygonZkEvmTestnet, redstone,
   scroll, tevmDefault, zoraTestnet
@@ -48,7 +48,6 @@ const defaultUrls: Record<SupportedNetwork, string> = {
   filecoin: filecoin.rpcUrls.default.http[0],
   gnosis: gnosis.rpcUrls.default.http[0],
   harmonyOne: harmonyOne.rpcUrls.default.http[0],
-  holesky: holesky.rpcUrls.default.http[0],
   kava: kava.rpcUrls.default.http[0],
   kavaTestnet: kavaTestnet.rpcUrls.default.http[0],
   linea: linea.rpcUrls.default.http[0],
