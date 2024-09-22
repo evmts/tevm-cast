@@ -114,6 +114,23 @@ Options:
 
       --trace
           Print a full trace of the transaction execution
+
+      --from <ADDRESS>
+          The address to send the transaction from
+
+      --value <VALUE>
+          The value to send with the transaction (in wei)
+
+      --gas-limit <GAS_LIMIT>
+          The gas limit for the transaction
+
+      --gas-price <GAS_PRICE>
+          The gas price for the transaction (in wei)
+
+      --block <BLOCK>
+          The block height to query at.
+          
+          Can also be the tags earliest, finalized, safe, latest, or pending.
 `;
 
         static readonly chainIdHelp = `Get the Ethereum chain ID

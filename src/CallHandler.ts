@@ -7,11 +7,26 @@ import { InternalError } from "tevm/errors";
 import type { EvmRunCallOpts } from "tevm/evm";
 import type { DebugTraceCallResult } from "tevm/actions";
 
+// TODO this is copy pasta from CommandRunner.ts
+// We should create a new class called CLIParser that is in charge of parsing the CLI
+export class CLIParser {
+  public static parseBlockTag(tag: string): Hex | bigint | 'latest' {
+    if (tag.startsWith('0x')) {
+      return tag as Hex;
+    }
+    if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(tag[0])) {
+      return BigInt(tag);
+    }
+    return (tag ?? 'latest') as 'latest';
+  }
+}
+
 export class CallHandler {
   public static readonly handleCallCommand = async (node: TevmNode, command: string) => {
+    const vm = await node.getVm()
     const parts = command.split(' ');
     if (parts.length < 4) {
-      throw new Error('Usage: cast call <to> <sig> [args...] [--access-list] [--trace] [--impersonate-transaction]');
+      throw new Error('Usage: cast call <to> <sig> [args...] [options]');
     }
     const to = parts[2] as `0x${string}`;
     let sig = parts[3];
@@ -51,7 +66,21 @@ export class CallHandler {
     if (parts.includes('--trace')) {
       options.trace = true;
     }
-    const vm = await node.getVm()
+    if (parts.includes('--from')) {
+      options.from = createAddress(parts[parts.indexOf('--from') + 1]);
+    }
+    if (parts.includes('--value')) {
+      options.value = BigInt(parts[parts.indexOf('--value') + 1]);
+    }
+    if (parts.includes('--gas-limit')) {
+      options.gasLimit = BigInt(parts[parts.indexOf('--gas-limit') + 1]);
+    }
+    if (parts.includes('--gas-price')) {
+      options.gasPrice = BigInt(parts[parts.indexOf('--gas-price') + 1]);
+    }
+    if (parts.includes('--block')) {
+      options.block = vm.blockchain.getBlockByTag(CLIParser.parseBlockTag(parts[parts.indexOf('--block') + 1]));
+    }
     if (parts.includes('--impersonate-transaction')) {
       options.createTransaction = true;
       options.skipBalance = true;
