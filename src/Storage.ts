@@ -1,4 +1,12 @@
-import { redstone } from "tevm/common";
+import {
+  arbitrumNova, aurora, auroraTestnet,
+  avalanche, bearNetworkChainMainnet, berachainTestnet,
+  blast, blastSepolia, boba, bsc, celo, cronos, cronosTestnet,
+  fantom, filecoin, gnosis, harmonyOne, holesky, kava, kavaTestnet,
+  linea, lineaTestnet, lyra, manta, mantle, metis, mode,
+  moonbeam, moonriver, opBNB, polygonMumbai, polygonZkEvm, polygonZkEvmTestnet, redstone,
+  scroll, tevmDefault, zoraTestnet
+} from "tevm/common";
 import { SupportedNetwork } from "./Nodes";
 
 const alchemyApiKey = 'beaEwjczm1iCOAcSco_F8QbtqnwnginU';
@@ -19,16 +27,46 @@ const alchemyUrls = {
   zksyncSepolia: `https://zksync-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
 };
 
-const defaultUrls = {
+const defaultUrls: Record<SupportedNetwork, string> = {
+  ...alchemyUrls,
   redstone: redstone.rpcUrls.default.http[0],
-  arbitrumNova: 'https://nova.arbitrum.io/rpc',
-  celo: 'https://forno.celo.org',
-  berachain: 'https://artio.testnet.berachain.com',
-  scroll: 'https://rpc.scroll.io',
-  blast: 'https://rpc.blast.io',
-  avalanche: 'https://api.avax.network/ext/bc/C/rpc',
-  manta: 'https://pacific-rpc.manta.network/http',
-  mantle: 'https://rpc.mantle.xyz',
+  arbitrumNova: arbitrumNova.rpcUrls.default.http[0],
+  aurora: aurora.rpcUrls.default.http[0],
+  auroraTestnet: auroraTestnet.rpcUrls.default.http[0],
+  avalanche: avalanche.rpcUrls.default.http[0],
+  bearNetworkChainMainnet: bearNetworkChainMainnet.rpcUrls.default.http[0],
+  berachain: berachainTestnet.rpcUrls.default.http[0],
+  berachainTestnet: berachainTestnet.rpcUrls.default.http[0],
+  blast: blast.rpcUrls.default.http[0],
+  blastSepolia: blastSepolia.rpcUrls.default.http[0],
+  boba: boba.rpcUrls.default.http[0],
+  bsc: bsc.rpcUrls.default.http[0],
+  celo: celo.rpcUrls.default.http[0],
+  cronos: cronos.rpcUrls.default.http[0],
+  cronosTestnet: cronosTestnet.rpcUrls.default.http[0],
+  fantom: fantom.rpcUrls.default.http[0],
+  filecoin: filecoin.rpcUrls.default.http[0],
+  gnosis: gnosis.rpcUrls.default.http[0],
+  harmonyOne: harmonyOne.rpcUrls.default.http[0],
+  holesky: holesky.rpcUrls.default.http[0],
+  kava: kava.rpcUrls.default.http[0],
+  kavaTestnet: kavaTestnet.rpcUrls.default.http[0],
+  linea: linea.rpcUrls.default.http[0],
+  lineaTestnet: lineaTestnet.rpcUrls.default.http[0],
+  lyra: lyra.rpcUrls.default.http[0],
+  manta: manta.rpcUrls.default.http[0],
+  mantle: mantle.rpcUrls.default.http[0],
+  metis: metis.rpcUrls.default.http[0],
+  mode: mode.rpcUrls.default.http[0],
+  moonbeam: moonbeam.rpcUrls.default.http[0],
+  moonriver: moonriver.rpcUrls.default.http[0],
+  opBNB: opBNB.rpcUrls.default.http[0],
+  polygonMumbai: polygonMumbai.rpcUrls.default.http[0],
+  polygonZkEvm: polygonZkEvm.rpcUrls.default.http[0],
+  polygonZkEvmTestnet: polygonZkEvmTestnet.rpcUrls.default.http[0],
+  scroll: scroll.rpcUrls.default.http[0],
+  tevmDefault: tevmDefault.rpcUrls.default.http[0],
+  zoraTestnet: zoraTestnet.rpcUrls.default.http[0],
 };
 
 export class Storage {
@@ -55,13 +93,7 @@ export class Storage {
     const storedUrl = localStorage.getItem(`rpcUrl_${network}`);
     if (storedUrl) return storedUrl;
     
-    if (network in alchemyUrls) {
-      return alchemyUrls[network];
-    } else if (network in defaultUrls) {
-      return defaultUrls[network];
-    } else {
-      return ''; // For networks without a default URL
-    }
+    return defaultUrls[network] || ''; // Returns an empty string if no default URL is found
   }
 
   setStoredUrl(network: string, url: string) {

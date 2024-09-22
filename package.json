@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.4.1",
+    "vite": "^5.4.7",
     "vite-plugin-pwa": "^0.20.5"
   },
   "dependencies": {
-    "tevm": "1.0.0-next.111",
-    "viem": "^2.21.6",
-    "zustand": "^4.5.5"
+    "tevm": "1.0.0-next.116",
+    "viem": "^2.21.11",
+    "zustand": "5.0.0-rc.2"
   }
 }
