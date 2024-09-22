@@ -39,7 +39,7 @@ export class SendHandler {
 
     // Parse additional options
     const fromIndex = parts.indexOf('--from');
-    const impersonatedAddress = fromIndex !== -1 ? parts[fromIndex + 1] : (await LazyTevm.getPrefundedAccounts())[0].address;
+    const impersonatedAddress = fromIndex !== -1 ? parts[fromIndex + 1] : '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' ;
 
     const valueIndex = parts.indexOf('--value');
     if (valueIndex !== -1) options.value = BigInt(parts[valueIndex + 1]);

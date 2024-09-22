@@ -36,20 +36,36 @@ export class EventListeners {
          * Creates a new tevm node and updates the UI when a network is selected.
          */
         html.networkSelect.addEventListener('change', async function onNetworkSelect() {
+            const oldNetwork = nodes.network;
             const newNetwork = html.networkSelect.value as SupportedNetwork;
             nodes.network = newNetwork as SupportedNetwork;
             const url = await storage.getStoredUrl(newNetwork);
             html.rpcUrlDiv.value = url;
             const node = (await nodes[newNetwork]()).node;
 
+            const errorMessage = "Error: Unable to connect to the network. Please check your RPC URL and try again."
             if (html.networkSelect.value) {
+                await node.ready().then(async () => {
                 html.networkInfo.style.display = 'table';
                 html.rpcUrlDiv.style.display = 'block';
-                const [chainId, block] = await Promise.all([node.getVm().then(vm => vm.common.id), node.getVm().then(vm => vm.blockchain.getCanonicalHeadBlock())])
-                html.chainIdCell.textContent = chainId.toLocaleString();
-                html.baseFeeCell.textContent = block.header.baseFeePerGas?.toLocaleString() ?? '';
-                html.gasLimitCell.textContent = block.header.gasLimit.toLocaleString();
-                html.forkBlockCell.textContent = block.header.number.toLocaleString();
+                  const [chainId, block] = await Promise.all([
+                    node.getVm().then((vm) => vm.common.id),
+                    node.getVm().then((vm) => vm.blockchain.getCanonicalHeadBlock()),
+                  ]);
+                  html.chainIdCell.textContent = chainId.toLocaleString();
+                  html.baseFeeCell.textContent =
+                    block.header.baseFeePerGas?.toLocaleString() ?? "";
+                  html.gasLimitCell.textContent = block.header.gasLimit.toLocaleString();
+                  html.forkBlockCell.textContent = block.header.number.toLocaleString();
+                  const currentOutput = html.output.textContent || '';
+                  if (currentOutput.includes(errorMessage)) {
+                    html.renderCommandResult('');
+                  }
+                }).catch((error) => {
+                  html.renderCommandResult(
+                    `${errorMessage}\n${(error as Error).message}`
+                  );
+                });
             } else {
                 html.networkInfo.style.display = 'none';
                 html.rpcUrlDiv.style.display = 'none';

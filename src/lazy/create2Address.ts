@@ -1,0 +1,1 @@
+    export { create2ContractAddress } from 'tevm/address'
