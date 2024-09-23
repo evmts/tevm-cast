@@ -1,1 +1,1 @@
-export { kava } from 'tevm/common';
+export { kava } from '@tevm/common';

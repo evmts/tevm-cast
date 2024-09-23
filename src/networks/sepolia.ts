@@ -1,1 +1,1 @@
-export { sepolia } from 'tevm/common';
+export { sepolia } from '@tevm/common';

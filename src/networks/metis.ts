@@ -1,1 +1,1 @@
-export { metis } from 'tevm/common';
+export { metis } from '@tevm/common';

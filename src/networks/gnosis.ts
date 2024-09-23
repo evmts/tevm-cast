@@ -1,1 +1,1 @@
-export { gnosis } from 'tevm/common';
+export { gnosis } from '@tevm/common';

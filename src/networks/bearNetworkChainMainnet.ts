@@ -1,1 +1,1 @@
-export { bearNetworkChainMainnet } from 'tevm/common';
+export { bearNetworkChainMainnet } from '@tevm/common';

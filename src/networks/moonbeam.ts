@@ -1,1 +1,1 @@
-export { moonbeam } from 'tevm/common';
+export { moonbeam } from '@tevm/common';

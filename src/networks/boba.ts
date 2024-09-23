@@ -1,1 +1,1 @@
-export { boba } from 'tevm/common';
+export { boba } from '@tevm/common';

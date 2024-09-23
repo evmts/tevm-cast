@@ -1,1 +1,1 @@
-export { opBNB } from 'tevm/common';
+export { opBNB } from '@tevm/common';

@@ -1,1 +1,1 @@
-export { berachainTestnet } from 'tevm/common';
+export { berachainTestnet } from '@tevm/common';

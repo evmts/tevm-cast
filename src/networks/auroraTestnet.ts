@@ -1,1 +1,1 @@
-export { auroraTestnet } from 'tevm/common';
+export { auroraTestnet } from '@tevm/common';

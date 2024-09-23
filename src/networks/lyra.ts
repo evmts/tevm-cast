@@ -1,1 +1,1 @@
-export { lyra } from 'tevm/common';
+export { lyra } from '@tevm/common';

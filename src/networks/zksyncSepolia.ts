@@ -1,1 +1,1 @@
-export { zksyncSepoliaTestnet } from 'tevm/common';
+export { zksyncSepoliaTestnet } from '@tevm/common';

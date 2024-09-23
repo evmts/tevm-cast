@@ -1,1 +1,1 @@
-export { zksync } from 'tevm/common';
+export { zksync } from '@tevm/common';

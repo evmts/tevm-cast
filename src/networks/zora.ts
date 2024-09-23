@@ -1,1 +1,1 @@
-export { zora } from 'tevm/common';
+export { zora } from '@tevm/common';

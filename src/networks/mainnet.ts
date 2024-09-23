@@ -1,1 +1,1 @@
-export { mainnet } from 'tevm/common';
+export { mainnet } from '@tevm/common';

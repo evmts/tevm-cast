@@ -1,1 +1,1 @@
-export { tevmDefault } from 'tevm/common';
+export { tevmDefault } from '@tevm/common';

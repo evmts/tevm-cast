@@ -1,1 +1,1 @@
-export { optimism } from 'tevm/common';
+export { optimism } from '@tevm/common';

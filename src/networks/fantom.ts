@@ -1,1 +1,1 @@
-export { fantom } from 'tevm/common';
+export { fantom } from '@tevm/common';

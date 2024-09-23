@@ -1,1 +1,1 @@
-export { kavaTestnet } from 'tevm/common';
+export { kavaTestnet } from '@tevm/common';

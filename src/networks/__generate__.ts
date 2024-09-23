@@ -61,7 +61,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 networks.forEach(network => {
-  const content = `export { ${network} } from 'tevm/common';\n`;
+  const content = `export { ${network} } from '@tevm/common';\n`;
   const filePath = path.join(outputDir, `${network}.ts`);
   fs.writeFileSync(filePath, content);
   console.log(`Generated: ${filePath}`);

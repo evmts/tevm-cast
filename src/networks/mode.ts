@@ -1,1 +1,1 @@
-export { mode } from 'tevm/common';
+export { mode } from '@tevm/common';

@@ -1,1 +1,1 @@
-export { moonriver } from 'tevm/common';
+export { moonriver } from '@tevm/common';

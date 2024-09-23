@@ -1,1 +1,1 @@
-export { celo } from 'tevm/common';
+export { celo } from '@tevm/common';

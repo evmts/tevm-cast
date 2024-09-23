@@ -1,1 +1,1 @@
-export { arbitrum } from 'tevm/common';
+export { arbitrum } from '@tevm/common';

@@ -1,1 +1,1 @@
-export { avalanche } from 'tevm/common';
+export { avalanche } from '@tevm/common';

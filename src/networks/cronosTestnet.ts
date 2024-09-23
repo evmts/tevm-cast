@@ -1,1 +1,1 @@
-export { cronosTestnet } from 'tevm/common';
+export { cronosTestnet } from '@tevm/common';

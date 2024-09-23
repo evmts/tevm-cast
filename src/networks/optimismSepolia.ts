@@ -1,1 +1,1 @@
-export { optimismSepolia } from 'tevm/common';
+export { optimismSepolia } from '@tevm/common';

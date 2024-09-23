@@ -1,1 +1,1 @@
-export { aurora } from 'tevm/common';
+export { aurora } from '@tevm/common';

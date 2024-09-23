@@ -1,1 +1,1 @@
-export { blast } from 'tevm/common';
+export { blast } from '@tevm/common';

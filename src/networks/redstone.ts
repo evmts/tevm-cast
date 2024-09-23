@@ -1,1 +1,1 @@
-export { redstone } from 'tevm/common';
+export { redstone } from '@tevm/common';

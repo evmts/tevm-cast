@@ -1,1 +1,1 @@
-export { filecoin } from 'tevm/common';
+export { filecoin } from '@tevm/common';

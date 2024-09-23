@@ -1,1 +1,1 @@
-export { harmonyOne } from 'tevm/common';
+export { harmonyOne } from '@tevm/common';

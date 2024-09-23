@@ -1,1 +1,1 @@
-export { polygonZkEvmTestnet } from 'tevm/common';
+export { polygonZkEvmTestnet } from '@tevm/common';

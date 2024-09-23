@@ -1,1 +1,1 @@
-export { polygonMumbai } from 'tevm/common';
+export { polygonMumbai } from '@tevm/common';

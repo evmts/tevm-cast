@@ -1,1 +1,1 @@
-export { bsc } from 'tevm/common';
+export { bsc } from '@tevm/common';

@@ -1,1 +1,1 @@
-export { arbitrumNova } from 'tevm/common';
+export { arbitrumNova } from '@tevm/common';

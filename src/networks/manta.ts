@@ -1,1 +1,1 @@
-export { manta } from 'tevm/common';
+export { manta } from '@tevm/common';

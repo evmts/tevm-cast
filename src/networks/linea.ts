@@ -1,1 +1,1 @@
-export { linea } from 'tevm/common';
+export { linea } from '@tevm/common';

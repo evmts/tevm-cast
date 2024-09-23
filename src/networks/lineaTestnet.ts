@@ -1,1 +1,1 @@
-export { lineaTestnet } from 'tevm/common';
+export { lineaTestnet } from '@tevm/common';

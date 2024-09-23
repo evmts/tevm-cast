@@ -1,1 +1,1 @@
-export { zoraSepolia } from 'tevm/common';
+export { zoraSepolia } from '@tevm/common';
