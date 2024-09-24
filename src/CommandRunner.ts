@@ -30,7 +30,7 @@ export class CommandRunner {
       switch (true) {
         case '' === command:
         case 'cast' === command:
-        case 'cast' === command:
+        case 'cast ' === command:
         case 'cast --help' === command:
         case 'cast -h' === command:
           this.html.renderCommandResult(HelpText.help);
