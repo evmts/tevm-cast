@@ -231,8 +231,7 @@ tr:nth-child(even) {
 }
 
 #output,
-#skeletonLoader,
-#rpcUrl {
+#traceOutput {
     overflow-wrap: break-word;
     background-color: #000000;
     border: 2px solid #00FF00;
@@ -253,6 +252,87 @@ tr:nth-child(even) {
 
 #output:hover {
     background-color: #001100;
+}
+
+#traceOutput {
+    overflow-wrap: break-word;
+    background-color: #000000;
+    border: 2px solid #00FF00;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: left;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: inset 0 0 10px #00FF00;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#traceOutput h3 {
+    color: #FFFF00;
+    text-shadow: 2px 2px #FF00FF, -2px -2px #00FFFF;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.trace-tree {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.trace-line {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.trace-pc, .trace-depth {
+    color: #888;
+    margin-right: 10px;
+}
+
+.trace-gas {
+    color: #00FFFF;
+    min-width: 60px;
+    margin-right: 10px;
+}
+
+.trace-op {
+    color: #00FF00;
+    min-width: 100px;
+    margin-right: 10px;
+}
+
+.trace-arrow {
+    color: #FF00FF;
+    margin: 0 10px;
+}
+
+.trace-stack {
+    color: #FFFF00;
+}
+
+.trace-tree li:nth-child(odd) {
+    background-color: rgba(0, 128, 0, 0.1);
+}
+
+.trace-tree li:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.trace-memory, .trace-storage {
+    color: #FFA500;
+    margin-left: 10px;
+}
+
+.trace-error {
+    color: #FF0000;
+    font-weight: bold;
+    margin-left: 10px;
 }
 
 #skeletonLoader {
@@ -385,4 +465,201 @@ footer a:hover {
 
 .json-null {
     color: #8e44ad;
+}
+
+/* Trace container styles */
+.trace-container {
+  margin-top: 20px;
+  border: 2px solid #00FF00;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 15px #00FF00, inset 0 0 10px #00FF00;
+  font-family: 'Courier New', Courier, monospace;
+  overflow-x: auto;
+}
+
+.trace-container h3 {
+  color: #FFFF00;
+  text-shadow: 2px 2px #FF00FF, -2px -2px #00FFFF;
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.trace-tree {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.trace-line {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.trace-pc, .trace-depth {
+  color: #888;
+  margin-right: 10px;
+}
+
+.trace-gas {
+  color: #00FFFF;
+  min-width: 60px;
+  margin-right: 10px;
+}
+
+.trace-op {
+  color: #00FF00;
+  min-width: 100px;
+  margin-right: 10px;
+}
+
+.trace-arrow {
+  color: #FF00FF;
+  margin: 0 10px;
+}
+
+.trace-stack {
+  color: #FFFF00;
+}
+
+.trace-tree li:nth-child(odd) {
+  background-color: rgba(0, 128, 0, 0.1);
+}
+
+.trace-tree li:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.trace-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+.trace-container::-webkit-scrollbar-track {
+  background: #000080;
+  border-radius: 5px;
+}
+
+.trace-container::-webkit-scrollbar-thumb {
+  background: #00FF00;
+  border-radius: 5px;
+  border: 2px solid #000080;
+}
+
+.trace-container::-webkit-scrollbar-thumb:hover {
+  background: #00FFFF;
+}
+
+.trace-container {
+  scrollbar-width: thin;
+  scrollbar-color: #00FF00 #000080;
+}
+
+.trace-memory, .trace-storage {
+  color: #FFA500;
+  margin-left: 10px;
+}
+
+.trace-error {
+  color: #FF0000;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.main-output {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #00FF00;
+}
+
+.toggle-trace-view {
+  background-color: #000080;
+  color: #00FF00;
+  border: 2px solid #00FF00;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.toggle-trace-view:hover {
+  background-color: #00FF00;
+  color: #000080;
+}
+
+.trace-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 4px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.trace-table th {
+  text-align: left;
+  padding: 8px;
+  background-color: #000080;
+  color: #00FF00;
+  font-weight: bold;
+}
+
+.trace-table td {
+  padding: 8px;
+  border-top: 1px solid #00FF00;
+  border-bottom: 1px solid #00FF00;
+}
+
+.trace-table tr {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.trace-table tr:hover {
+  background-color: rgba(0, 128, 0, 0.2);
+}
+
+/* Color coding for different operation types */
+.trace-table tr.op-push1,
+.trace-table tr.op-push2,
+.trace-table tr.op-push32 {
+  background-color: rgba(0, 0, 255, 0.2);
+}
+
+.trace-table tr.op-mstore,
+.trace-table tr.op-mload {
+  background-color: rgba(255, 0, 255, 0.2);
+}
+
+.trace-table tr.op-sstore,
+.trace-table tr.op-sload {
+  background-color: rgba(255, 165, 0, 0.2);
+}
+
+.trace-table tr.op-call,
+.trace-table tr.op-staticcall,
+.trace-table tr.op-delegatecall {
+  background-color: rgba(255, 255, 0, 0.2);
+}
+
+/* Depth indentation */
+.trace-table tr[class^="depth-"] td:first-child {
+  padding-left: calc(8px + var(--depth, 0) * 20px);
+}
+
+.trace-table tr.depth-0 { --depth: 0; }
+.trace-table tr.depth-1 { --depth: 1; }
+.trace-table tr.depth-2 { --depth: 2; }
+.trace-table tr.depth-3 { --depth: 3; }
+/* Add more depth levels as needed */
+
+.trace-container pre {
+  background-color: #000000;
+  color: #00FF00;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  font-family: 'Courier New', Courier, monospace;
 }

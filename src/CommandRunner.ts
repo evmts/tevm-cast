@@ -608,9 +608,8 @@ export class CommandRunner {
 
         case command.startsWith('cast call '):
           this.html.renderCommandLoading()
-          this.html.renderCommandResult(
-            JSON.stringify(await CallHandler.handleCallCommand(node, command), null, 2)
-          )
+          const {trace, ...result} = await CallHandler.handleCallCommand(node, command)
+          this.html.renderCommandResult(JSON.stringify(result, null, 2), trace)
           return;
 
         case command === 'cast send':
