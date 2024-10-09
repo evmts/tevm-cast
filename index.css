@@ -1,23 +1,23 @@
 body {
     font-family: "Courier New", Courier, monospace;
-    background-color: #000080;
+    background-color: black;
     color: #00FF00;
     margin: 0;
     padding: 20px;
     text-align: center;
-    background-image: radial-gradient(#0000FF 1px, transparent 1px);
     background-size: 20px 20px;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1600px; /* Increased from 800px */
     margin: 0 auto;
     background-color: rgba(0, 0, 0, 0.8);
     border: 3px solid #00FF00;
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 0 20px #00FF00, inset 0 0 10px #00FF00;
-    display: 'flex';
+    box-shadow: 0 0 10px #00FF00, inset 0 0 5px #00FF00;
+    display: flex;
+    flex-direction: column; /* Added to ensure proper layout */
 }
 
 h1 {
@@ -397,6 +397,12 @@ tr:nth-child(even) {
     }
 }
 
+@media (max-width: 1650px) { /* Added responsive breakpoint */
+    .container {
+        margin: 0 20px;
+    }
+}
+
 #historyContainer {
     display: flex;
     justify-content: space-between;
@@ -421,7 +427,7 @@ tr:nth-child(even) {
 }
 
 footer {
-    max-width: 800px;
+    max-width: 1600px; /* Increased from 800px */
     margin: 20px auto 0;
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.6);
@@ -470,11 +476,9 @@ footer a:hover {
 /* Trace container styles */
 .trace-container {
   margin-top: 20px;
-  border: 2px solid #00FF00;
-  border-radius: 10px;
-  padding: 15px;
+  padding: 0px;
+  border: none;
   background-color: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 15px #00FF00, inset 0 0 10px #00FF00;
   font-family: 'Courier New', Courier, monospace;
   overflow-x: auto;
 }

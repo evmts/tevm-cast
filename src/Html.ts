@@ -1,3 +1,5 @@
+import { Hex, hexToBigInt, numberToHex } from "viem";
+
 /**
  * Represents the HTML elements and rendering methods for the CLI interface.
  * @class
@@ -175,7 +177,7 @@ export class Html {
 
     const thead = table.createTHead();
     const headerRow = thead.insertRow();
-    ['PC', 'Gas', 'Op', 'Stack', 'Memory', 'Storage'].forEach(header => {
+    ['PC', 'Gas', 'Op', 'Stack', 'Memory', 'Address' ].forEach(header => {
       const th = document.createElement('th');
       th.textContent = header;
       headerRow.appendChild(th);
@@ -187,14 +189,14 @@ export class Html {
       row.className = `depth-${log.depth} op-${log.op.toLowerCase()}`;
 
       const gasUsed = index > 0 ? structLogs[index - 1].gas - log.gas : 0;
-
+      console.log(log)
       row.innerHTML = `
         <td>${log.pc}</td>
         <td>${gasUsed}/${log.gas}</td>
         <td>${log.op}</td>
         <td>${log.stack ? log.stack.join(', ') : ''}</td>
         <td>${log.memory ? this.formatMemory(log.memory) : ''}</td>
-        <td>${log.storage ? JSON.stringify(log.storage) : ''}</td>
+        <td>${log.address ? JSON.stringify(log?.address) : ''}</td>
       `;
     });
 
@@ -234,7 +236,8 @@ export class Html {
   }
 
   private formatMemory(memory: string): string {
-    // This is a simple formatting, you might want to improve it
-    return memory.substring(0, 20) + (memory.length > 20 ? '...' : '');
+    // this is simple way to remove preceding 0s 
+    const trimmedMemory = memory.replace(/^0x0+/, '0x');
+    return (trimmedMemory.length > 20 ? trimmedMemory.substring(0, 20) + '...' : trimmedMemory) as Hex;
   }
 }

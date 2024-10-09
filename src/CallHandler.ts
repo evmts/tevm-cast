@@ -7,6 +7,7 @@ import { InternalError } from "tevm/errors";
 import type { EvmRunCallOpts } from "tevm/evm";
 import type { DebugTraceCallResult } from "tevm/actions";
 import { CLIParser } from "./CliParser";
+import { bytesRegex } from "viem/utils";
 
 export class CallHandler {
   public static readonly handleCallCommand = async (node: TevmNode, command: string) => {
@@ -175,7 +176,7 @@ export class CallHandler {
        */
       returnValue: '0x0',
       failed: false,
-      structLogs: [] as Array<DebugTraceCallResult['structLogs'][number]>,
+      structLogs: [] as Array<DebugTraceCallResult['structLogs'][number] & { memory: Hex, address: Address }>,
     }
 
     /**
@@ -183,12 +184,14 @@ export class CallHandler {
      */
     vm.evm.events?.on('step', async (step, next) => {
       trace.structLogs.push({
+        address: step.address?.toString(),
         pc: step.pc,
         op: step.opcode.name,
         gasCost: BigInt(step.opcode.fee) + (step.opcode.dynamicFee ?? 0n),
         gas: step.gasLeft,
         depth: step.depth,
         stack: step.stack.map((code) => numberToHex(code)),
+        memory: bytesToHex(step.memory),
       })
       next?.()
     })
