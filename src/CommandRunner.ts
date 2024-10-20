@@ -6,7 +6,7 @@ import { CallHandler } from "./CallHandler";
 import { SendHandler } from "./SendHandler.js";
 import { FetchFunctionSignature } from "./FetchFunctionSig.js";
 import { EthjsAddress } from "tevm/utils";
-import { EthGetLogsJsonRpcRequest, ethGetLogsProcedure, gasPriceProcedure } from 'tevm/procedures';
+import { EthGetLogsJsonRpcRequest, ethGetLogsProcedure, gasPriceProcedure } from 'tevm/actions';
 import { CLIParser } from "./CliParser.js";
 import { LazyTevm } from "./LazyTevm.js";
 
@@ -608,7 +608,7 @@ export class CommandRunner {
 
         case command.startsWith('cast call '):
           this.html.renderCommandLoading()
-          const {trace, ...result} = await CallHandler.handleCallCommand(node, command)
+          const { trace, ...result } = await CallHandler.handleCallCommand(node, command)
           this.html.renderCommandResult(JSON.stringify(result, null, 2), trace)
           return;
 

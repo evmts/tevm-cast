@@ -10,13 +10,13 @@
   },
   "devDependencies": {
     "rollup-plugin-visualizer": "^5.12.0",
-    "vite": "^5.4.7",
+    "vite": "^5.4.9",
     "vite-plugin-pwa": "^0.20.5"
   },
   "dependencies": {
-    "@tevm/common": "1.0.0-next.117",
-    "tevm": "1.0.0-next.117",
-    "viem": "^2.21.12",
-    "zustand": "5.0.0-rc.2"
+    "@tevm/common": "1.0.0-next.118",
+    "tevm": "1.0.0-next.124",
+    "viem": "^2.21.31",
+    "zustand": "5.0.0"
   }
 }

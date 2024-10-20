@@ -3,6 +3,7 @@ import type { Address } from 'tevm/address';
 import type { Common } from 'tevm/common';
 
 export type SupportedNetwork =
+  | "ape"
   | "arbitrum"
   | "arbitrumNova"
   | "arbitrumSepolia"
@@ -67,6 +68,7 @@ export class LazyTevm {
   }
 
   private static commonMap: Record<SupportedNetwork, () => Promise<Common>> = {
+    ape: () => import('./networks/ape').then(module => module.ape),
     arbitrum: () => import('./networks/arbitrum').then(module => module.arbitrum),
     arbitrumNova: () => import('./networks/arbitrumNova').then(module => module.arbitrumNova),
     arbitrumSepolia: () => import('./networks/arbitrumSepolia').then(module => module.arbitrumSepolia),
@@ -124,7 +126,7 @@ export class LazyTevm {
 
   public static createTevmNode = async (params: TevmNodeOptions): Promise<TevmNode> => {
     const { createTevmNode } = await import('./lazy/createTevmNode')
-    return createTevmNode(params) 
+    return createTevmNode(params)
   }
 
   public static http = async (rpcUrl: string) => {

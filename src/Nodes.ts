@@ -3,7 +3,7 @@ import type { TevmNode } from 'tevm'
 import type { Common } from 'tevm/common'
 import { LazyTevm, type SupportedNetwork } from "./LazyTevm";
 
-export class Nodes implements Record<SupportedNetwork, () => Promise<{ common: Common; node: TevmNode }>>{
+export class Nodes implements Record<SupportedNetwork, () => Promise<{ common: Common; node: TevmNode }>> {
   public static createTevmNode = async (rpcUrl: string, common: Common) => {
     return LazyTevm.createTevmNode({
       common,
@@ -41,6 +41,7 @@ export class Nodes implements Record<SupportedNetwork, () => Promise<{ common: C
     return this.nodes.tevmDefault;
   }
 
+  public async ape() { return this.getNode('ape'); }
   public async arbitrum() { return this.getNode('arbitrum'); }
   public async arbitrumNova() { return this.getNode('arbitrumNova'); }
   public async arbitrumSepolia() { return this.getNode('arbitrumSepolia'); }
